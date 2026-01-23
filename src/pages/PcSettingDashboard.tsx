@@ -7,37 +7,40 @@ import PcDetailPanel from "../components/PcDetailPanel";
 
 const PcSettingDashboard = () => {
   return (
-    <div className="d-flex flex-column" style={{ height: "100vh" }}>
+    <>
       <Header />
 
-      <div className="d-flex flex-grow-1">
+      <div className="d-flex">
         <Sidebar />
 
-        <Container fluid className="p-4 bg-light">
+        <Container fluid className="p-4">
           <h4 className="mb-4">PC 세팅 대시보드</h4>
 
-          <StatCards />
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Control placeholder="이름 또는 이메일 검색" />
-            </Col>
-            <Col xs="auto">
-              <Button>신규 세팅 추가</Button>
-            </Col>
-          </Row>
-
           <Row>
-            <Col md={8}>
+            {/* 왼쪽 메인 영역 */}
+            <Col lg={8} xl={9}>
+              <StatCards />
+
+              <Row className="mb-3 mt-3">
+                <Col>
+                  <Form.Control placeholder="이름 또는 이메일 검색" />
+                </Col>
+                <Col xs="auto">
+                  <Button>신규 세팅 추가</Button>
+                </Col>
+              </Row>
+
               <PcList />
             </Col>
-            <Col md={4}>
+
+            {/* 오른쪽 상세 패널 */}
+            <Col lg={4} xl={3}>
               <PcDetailPanel />
             </Col>
           </Row>
         </Container>
       </div>
-    </div>
+    </>
   );
 };
 
