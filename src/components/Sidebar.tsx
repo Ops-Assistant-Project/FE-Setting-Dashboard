@@ -27,14 +27,16 @@ const Sidebar = () => {
       <div className="p-3 fw-bold fs-5 border-bottom">Innomns</div>
 
       <Nav className="flex-column p-2 gap-1">
-        {/* PC 자산 */}
         <div
           className="d-flex justify-content-between align-items-center px-3 py-2 text-secondary"
           style={{ cursor: "pointer" }}
           onClick={() => setPcOpen(!pcOpen)}
         >
-          <img src={PcIcon} alt="PC" width={18} height={18} />
-          <span className="fw-semibold">PC 자산</span>
+          <div className="d-flex align-items-center gap-2">
+            <img src={PcIcon} alt="PC" width={18} height={18} />
+            <span className="fw-semibold">PC 자산</span>
+          </div>
+
           {pcOpen ? <ChevronDown /> : <ChevronRight />}
         </div>
 
@@ -62,22 +64,25 @@ const Sidebar = () => {
           </div>
         )}
 
-        <hr className="my-2" />
-
-        {/* 기타 메뉴 */}
         <Nav.Link className="px-3 py-2 text-secondary">
-          <img src={UserIcon} alt="User" width={18} height={18} />
-          사용자
+          <div className="d-flex align-items-center gap-2">
+            <img src={UserIcon} alt="User" width={18} height={18} />
+            <span>사용자</span>
+          </div>
         </Nav.Link>
 
         <Nav.Link className="px-3 py-2 text-secondary">
-          <img src={CheckIcon} alt="Check" width={18} height={18} />
-          조직 설정
+          <div className="d-flex align-items-center gap-2">
+            <img src={CheckIcon} alt="Check" width={18} height={18} />
+            <span>조직 설정</span>
+          </div>
         </Nav.Link>
 
         <Nav.Link className="px-3 py-2 text-secondary">
-          <img src={TicketIcon} alt="Ticket" width={18} height={18} />
-          Ticket 관리
+          <div className="d-flex align-items-center gap-2">
+            <img src={TicketIcon} alt="Ticket" width={18} height={18} />
+            <span>Ticket 관리</span>
+          </div>
         </Nav.Link>
       </Nav>
     </div>
