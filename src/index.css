@@ -98,3 +98,9 @@ body {
 .delete-btn:hover {
   opacity: 1;
 }
+
+.filter-action-btn {
+  min-width: 132px;
+  text-align: center;
+  white-space: nowrap;
+}

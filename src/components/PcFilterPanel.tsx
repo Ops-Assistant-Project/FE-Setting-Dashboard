@@ -29,17 +29,11 @@ const PcFilterPanel = () => {
   return (
     <Card className="mb-4">
       <Card.Body>
-        {/* 1줄: 검색 + 신규 세팅 추가 */}
-        <Row className="mb-3 align-items-center">
-          <Col>
-            <Form.Control placeholder="이름 또는 이메일 검색" />
-          </Col>
-          <Col xs="auto">
-            <Button>신규 세팅 추가</Button>
-          </Col>
-        </Row>
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <Form.Control placeholder="이름 또는 이메일 검색" />
+          <Button className="filter-action-btn">신규 세팅 추가</Button>
+        </div>
 
-        {/* 2줄: 필터들 + 필터 초기화 + 일괄 작업 */}
         <Row className="g-2 align-items-center">
           <Col>
             <Form.Select
@@ -119,6 +113,7 @@ const PcFilterPanel = () => {
           {/* 필터 초기화 (조건부 렌더링) */}
           <Col xs="auto">
             <Button
+              className="filter-action-btn"
               variant="outline-secondary"
               onClick={resetFilters}
               style={{
@@ -130,7 +125,9 @@ const PcFilterPanel = () => {
           </Col>
 
           <Col xs="auto">
-            <Button variant="outline-primary">일괄 작업</Button>
+            <Button className="filter-action-btn" variant="outline-primary">
+              일괄 작업
+            </Button>
           </Col>
         </Row>
       </Card.Body>
