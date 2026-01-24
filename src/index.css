@@ -34,3 +34,21 @@ body {
     BlinkMacSystemFont,
     sans-serif;
 }
+
+.checklist-add-btn {
+  white-space: nowrap; /* 글자 줄바꿈 방지 */
+  padding: 0 16px;
+  height: 48px; /* input이랑 높이 맞추기 */
+  font-weight: 600;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.status-grid button {
+  height: 44px;
+  font-weight: 600;
+}
