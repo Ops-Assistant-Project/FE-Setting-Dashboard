@@ -1,34 +1,44 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
+import PencilIcon from "../assets/icons/pencil.png";
+import BinIcon from "../assets/icons/bin.png";
 
 const PcDetailPanel = () => {
-  const [checklist, setChecklist] = useState<string[]>([]);
-  const [checkedItems, setCheckedItems] = useState<number[]>([]);
+  type ChecklistItem = {
+    text: string;
+    checked: boolean;
+  };
+
+  const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [input, setInput] = useState("");
 
   const addChecklist = () => {
     if (!input.trim()) return;
-    setChecklist([...checklist, input]);
+
+    setChecklist([...checklist, { text: input, checked: false }]);
+
     setInput("");
   };
 
   const toggleCheck = (index: number) => {
-    setCheckedItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+    setChecklist((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, checked: !item.checked } : item,
+      ),
     );
+  };
+
+  const removeChecklist = (index: number) => {
+    setChecklist((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
     <Card className="h-100">
       <Card.Body>
-        {/* ===== 상단 영역 ===== */}
         <div className="d-flex justify-content-between align-items-start mb-3">
           <Badge bg="danger">미정</Badge>
 
-          {/* 닫기 버튼 (이미지로 교체 예정) */}
-          <button className="btn p-0 border-0 bg-transparent">
-            {/* TODO: X 아이콘 이미지로 교체 */}✕
-          </button>
+          <button className="btn p-0 border-0 bg-transparent">✕</button>
         </div>
 
         <h5 className="fw-bold mb-1">이유민B</h5>
@@ -36,11 +46,9 @@ const PcDetailPanel = () => {
 
         <hr />
 
-        {/* ===== 기본 정보 ===== */}
         <div className="d-flex justify-content-between align-items-center mb-2">
           <strong>기본 정보</strong>
-          {/* TODO: 연필 아이콘 이미지 */}
-          <button className="btn p-0 border-0 bg-transparent">✎</button>
+          <img src={PencilIcon} width={14} height={14} />
         </div>
 
         <div className="mb-4">
@@ -66,7 +74,6 @@ const PcDetailPanel = () => {
 
         <Card className="mb-3">
           <Card.Body className="d-flex align-items-center gap-3">
-            {/* TODO: 아이콘 이미지 */}
             <div>🔐</div>
 
             <div className="flex-grow-1">
@@ -83,7 +90,6 @@ const PcDetailPanel = () => {
         </Card>
 
         {/* ===== 세팅 체크리스트 ===== */}
-        {/* ===== 세팅 체크리스트 ===== */}
         <strong className="d-block mb-2">세팅 체크리스트</strong>
 
         <div className="d-flex align-items-center gap-2 mb-3">
@@ -98,33 +104,40 @@ const PcDetailPanel = () => {
           </Button>
         </div>
 
-        {checklist.map((item, index) => (
-          <Form.Check
-            key={index}
-            type="checkbox"
-            label={
-              <span
-                style={{
-                  textDecoration: checkedItems.includes(index)
-                    ? "line-through"
-                    : "none",
-                }}
+        {/* ===== 체크리스트 목록 ===== */}
+        <ul className="checklist-list">
+          {checklist.map((item, index) => (
+            <li key={index} className="checklist-item">
+              {/* 왼쪽: 체크박스 + 텍스트 */}
+              <label className="checklist-left">
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleCheck(index)}
+                />
+
+                <span className={item.checked ? "checked" : ""}>
+                  {item.text}
+                </span>
+              </label>
+
+              {/* 오른쪽: 삭제 아이콘 */}
+              <button
+                className="delete-btn"
+                onClick={() => removeChecklist(index)}
               >
-                {item}
-              </span>
-            }
-            className="mb-2"
-            onChange={() => toggleCheck(index)}
-          />
-        ))}
+                <img src={BinIcon} alt="삭제" width={15} height={15} />
+              </button>
+            </li>
+          ))}
+        </ul>
 
         <hr />
 
         {/* ===== 메모 ===== */}
         <div className="d-flex justify-content-between align-items-center mb-2">
           <strong>메모</strong>
-          {/* TODO: 연필 아이콘 */}
-          <button className="btn p-0 border-0 bg-transparent">✎</button>
+          <img src={PencilIcon} width={14} height={14} />
         </div>
 
         <Form.Control
