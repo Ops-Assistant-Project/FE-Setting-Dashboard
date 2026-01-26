@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
+import DeletePcSettingModal from "./DeletePcSettingModal";
 import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
@@ -39,6 +40,7 @@ const PcDetailPanel = () => {
 
   const [isMemoEditMode, setIsMemoEditMode] = useState(false);
   const [memo, setMemo] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const addChecklist = () => {
     if (!input.trim()) return;
@@ -80,7 +82,19 @@ const PcDetailPanel = () => {
             <Badge bg="danger">{status}</Badge>
           )}
 
-          <button className="btn p-0 border-0 bg-transparent">✕</button>
+          {/* 오른쪽 아이콘 영역 */}
+          <div className="d-flex align-items-center gap-2">
+            {/* 삭제 (휴지통) */}
+            <button
+              className="btn p-0 border-0 bg-transparent me-2"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              <img src={BinIcon} alt="삭제" width={16} height={16} />
+            </button>
+
+            {/* 닫기 */}
+            <button className="btn p-0 border-0 bg-transparent">✕</button>
+          </div>
         </div>
 
         {/* ===== 이름 / 이메일 ===== */}
@@ -339,6 +353,15 @@ const PcDetailPanel = () => {
           </>
         )}
       </Card.Body>
+      <DeletePcSettingModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => {
+          // TODO: 실제 삭제 API 호출
+          console.log("세팅 삭제");
+          setShowDeleteModal(false);
+        }}
+      />
     </Card>
   );
 };
