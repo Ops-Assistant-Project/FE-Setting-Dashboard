@@ -104,3 +104,13 @@ body {
   text-align: center;
   white-space: nowrap;
 }
+
+.pc-setting-modal.modal-dialog {
+  max-width: 900px !important;
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: #f5f6f8;
+  cursor: not-allowed;
+}

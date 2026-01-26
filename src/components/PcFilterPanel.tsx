@@ -1,7 +1,10 @@
 import { Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState } from "react";
+import CreatePcSettingModal from "./CreatePcSettingModal";
 
 const PcFilterPanel = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
   // 필터 상태들
   const [filters, setFilters] = useState({
     type: "",
@@ -31,7 +34,17 @@ const PcFilterPanel = () => {
       <Card.Body>
         <div className="d-flex align-items-center gap-2 mb-3">
           <Form.Control placeholder="이름 또는 이메일 검색" />
-          <Button className="filter-action-btn">신규 세팅 추가</Button>
+          <Button
+            className="filter-action-btn"
+            onClick={() => setShowCreateModal(true)}
+          >
+            신규 세팅 추가
+          </Button>
+
+          <CreatePcSettingModal
+            show={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+          />
         </div>
 
         <Row className="g-2 align-items-center">
