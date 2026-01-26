@@ -251,7 +251,13 @@ const PcDetailPanel = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-          <Button onClick={addChecklist}>추가</Button>
+          <Button
+            onClick={addChecklist}
+            className="checklist-add-btn"
+            style={{ flexShrink: 0 }}
+          >
+            추가
+          </Button>
         </div>
 
         <ul className="checklist-list">
