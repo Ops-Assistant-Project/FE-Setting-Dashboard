@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
 
-const PcDetailPanel = () => {
+interface BatchPanelProps {
+  onClose: () => void;
+}
+
+const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
   const [type, setType] = useState("pending");
   const [status, setStatus] = useState("pending");
   const [urgency, setUrgency] = useState("true");
@@ -13,7 +17,9 @@ const PcDetailPanel = () => {
         <div className="d-flex justify-content-between align-items-start mb-3">
           <Badge bg="primary">미정</Badge>
 
-          <button className="btn p-0 border-0 bg-transparent">✕</button>
+          <button className="btn p-0 border-0 bg-transparent" onClick={onClose}>
+            ✕
+          </button>
         </div>
         <h5 className="fw-bold mb-1">일괄 작업</h5>
         <div className="text-muted mb-3">
