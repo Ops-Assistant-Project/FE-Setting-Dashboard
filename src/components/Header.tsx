@@ -1,4 +1,5 @@
 import { Container } from "react-bootstrap";
+import InnomsLogo from "../assets/icons/innoms.svg";
 
 const Header = () => {
   return (
@@ -7,7 +8,8 @@ const Header = () => {
         fluid
         className="h-100 d-flex align-items-center justify-content-between px-4"
       >
-        <div className="fw-bold fs-5">
+        <div className="fw-bold fs-5 d-flex align-items-center gap-2">
+          <img src={InnomsLogo} alt="PC" width={20} height={20} />
           <span className="logo-text">Innoms</span>
         </div>
 
