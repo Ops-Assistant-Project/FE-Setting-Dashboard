@@ -37,6 +37,9 @@ const PcDetailPanel = () => {
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [input, setInput] = useState("");
 
+  const [isMemoEditMode, setIsMemoEditMode] = useState(false);
+  const [memo, setMemo] = useState("");
+
   const addChecklist = () => {
     if (!input.trim()) return;
     setChecklist([...checklist, { text: input, checked: false }]);
@@ -283,12 +286,43 @@ const PcDetailPanel = () => {
         <hr />
 
         {/* ===== 메모 ===== */}
-        <strong className="d-block mb-2">메모</strong>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <strong>메모</strong>
+
+          {isMemoEditMode ? (
+            <button
+              className="btn p-0 border-0 bg-transparent"
+              onClick={() => setIsMemoEditMode(false)}
+            >
+              <img
+                src={CheckIcon}
+                width={16}
+                height={16}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  // TODO: 여기서 저장 API 호출
+                  setIsEditMode(false);
+                }}
+              />
+            </button>
+          ) : (
+            <img
+              src={PencilIcon}
+              width={14}
+              height={14}
+              style={{ cursor: "pointer" }}
+              onClick={() => setIsMemoEditMode(true)}
+            />
+          )}
+        </div>
+
         <Form.Control
           as="textarea"
           rows={3}
           placeholder="메모를 입력하세요..."
-          disabled
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+          disabled={!isMemoEditMode}
           className="mb-4"
         />
 
