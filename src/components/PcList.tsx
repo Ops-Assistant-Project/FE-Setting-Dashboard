@@ -59,7 +59,6 @@ const PcList = ({ onSelectPc }: PcListProps) => {
               <small>요청: 2025-11-20</small>
             </div>
 
-            {/* 체크박스는 클릭 이벤트 전파 막아주기 */}
             <Form.Check onClick={(e) => e.stopPropagation()} />
           </Card.Body>
         </Card>

@@ -6,9 +6,32 @@ import StatCards from "../components/StatCards";
 import PcList from "../components/PcList";
 import PcDetailPanel from "../components/PcDetailPanel";
 import PcFilterPanel from "../components/PcFilterPanel";
+import BatchPanel from "../components/BatchPanel";
 
 const PcSettingDashboard = () => {
+  const [rightPanel, setRightPanel] = useState<"none" | "detail" | "batch">(
+    "none",
+  );
   const [selectedPc, setSelectedPc] = useState<any | null>(null);
+
+  /** 데이터 클릭 → 상세 패널 */
+  const handleSelectPc = (pc: any) => {
+    setSelectedPc(pc);
+    setRightPanel("detail");
+  };
+
+  /** 일괄 작업 클릭 */
+  const handleOpenBatch = () => {
+    setSelectedPc(null);
+    setRightPanel("batch");
+  };
+
+  /** 패널 닫기 */
+  const handleClosePanel = () => {
+    setSelectedPc(null);
+    setRightPanel("none");
+  };
+
   return (
     <>
       <Header />
@@ -22,16 +45,17 @@ const PcSettingDashboard = () => {
           <Row>
             <Col lg={8} xl={9}>
               <StatCards />
-              <PcFilterPanel />
-              <PcList onSelectPc={setSelectedPc} />
+              <PcFilterPanel onOpenBatch={handleOpenBatch} />
+              <PcList onSelectPc={handleSelectPc} />
             </Col>
 
             <Col lg={4} xl={3}>
-              {selectedPc && (
-                <PcDetailPanel
-                  pc={selectedPc}
-                  onClose={() => setSelectedPc(null)}
-                />
+              {rightPanel === "detail" && selectedPc && (
+                <PcDetailPanel pc={selectedPc} onClose={handleClosePanel} />
+              )}
+
+              {rightPanel === "batch" && (
+                <BatchPanel onClose={handleClosePanel} />
               )}
             </Col>
           </Row>

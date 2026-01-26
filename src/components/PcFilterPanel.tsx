@@ -2,7 +2,11 @@ import { Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import CreatePcSettingModal from "./CreatePcSettingModal";
 
-const PcFilterPanel = () => {
+interface PcFilterPanelProps {
+  onOpenBatch: () => void;
+}
+
+const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // 필터 상태들
@@ -138,7 +142,11 @@ const PcFilterPanel = () => {
           </Col>
 
           <Col xs="auto">
-            <Button className="filter-action-btn" variant="outline-primary">
+            <Button
+              className="filter-action-btn"
+              variant="outline-primary"
+              onClick={onOpenBatch}
+            >
               일괄 작업
             </Button>
           </Col>
