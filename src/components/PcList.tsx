@@ -1,65 +1,47 @@
 import { Card, Form } from "react-bootstrap";
+import { useSettingList } from "../hooks/useSettingList";
+import type { Setting } from "../api/setting";
 
 interface PcListProps {
-  onSelectPc: (pc: Pc) => void;
+  onSelectPc: (setting: Setting) => void;
 }
 
-interface Pc {
-  id: number;
-  name: string;
-  os: string;
-  model: string;
-  role: string;
-  company: string;
-}
-
-const dummyPcList: Pc[] = [
-  {
-    id: 1,
-    name: "이유민B",
-    os: "Windows",
-    model: "16ML",
-    role: "어시",
-    company: "코어",
-  },
-  {
-    id: 2,
-    name: "홍길동A",
-    os: "Mac",
-    model: "Macbook Pro",
-    role: "어시",
-    company: "코어",
-  },
-  {
-    id: 3,
-    name: "김철수C",
-    os: "Windows",
-    model: "ThinkPad",
-    role: "정규",
-    company: "코어",
-  },
-];
+const companyLabels: Record<string, string> = {
+  core: "코어",
+  bank: "뱅크",
+  insu: "인슈",
+};
 
 const PcList = ({ onSelectPc }: PcListProps) => {
+  const { settings, loading } = useSettingList();
+
+  if (loading) return <div>로딩중...</div>;
+  console.log(settings);
   return (
     <>
-      {dummyPcList.map((pc) => (
+      {settings.map((setting) => (
         <Card
-          key={pc.id}
+          key={setting.id}
           className="mb-3"
           style={{ cursor: "pointer" }}
-          onClick={() => onSelectPc(pc)}
+          onClick={() => onSelectPc(setting)}
         >
           <Card.Body className="d-flex justify-content-between">
             <div>
-              <div className="fw-bold">{pc.name}</div>
+              <div className="fw-bold">{setting.user_name}</div>
+
               <div className="text-muted">
-                {pc.os} · {pc.model} · {pc.company} · {pc.role}
+                {setting.os} · {setting.model} ·{" "}
+                {companyLabels[setting.company]} ·{" "}
+                {setting.role === "team" ? "팀원" : "어시"}
               </div>
-              <small>요청: 2025-11-20</small>
+
+              <small>
+                요청: {new Date(setting.requested_date).toLocaleDateString()}
+              </small>
             </div>
 
-            <Form.Check onClick={(e) => e.stopPropagation()} />
+            <Form.Check />
           </Card.Body>
         </Card>
       ))}
