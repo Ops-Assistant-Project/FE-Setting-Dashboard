@@ -1,6 +1,13 @@
+html {
+  background-color: #f8f9fa;
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
-  background-color: #f8f9fa; /* Bootstrap 배경 느낌 */
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
 }
 
 @font-face {
