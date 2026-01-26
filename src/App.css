@@ -1,0 +1,22 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.list-card {
+  cursor: pointer;
+}

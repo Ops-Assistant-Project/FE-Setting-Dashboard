@@ -1,0 +1,123 @@
+html {
+  background-color: #f8f9fa;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
+}
+
+@font-face {
+  font-family: "KohiLearn";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/KOHIBaeumOTF.woff")
+    format("woff");
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+.logo-text {
+  font-family: "KohiLearn";
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: #3a74e9;
+}
+
+body {
+  font-family:
+    "Pretendard",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.status-grid button {
+  height: 44px;
+  font-weight: 600;
+}
+
+.checklist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checklist-add-btn {
+  white-space: nowrap; /* 글자 줄바꿈 방지 */
+  padding: 0 16px;
+  height: 48px; /* input이랑 높이 맞추기 */
+  font-weight: 600;
+}
+
+.checklist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.checklist-item:last-child {
+  border-bottom: none;
+}
+
+.checklist-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checklist-left input {
+  cursor: pointer;
+}
+
+.checklist-left span.checked {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}
+
+.filter-action-btn {
+  min-width: 132px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pc-setting-modal.modal-dialog {
+  max-width: 900px !important;
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: #f5f6f8;
+  cursor: not-allowed;
+}
