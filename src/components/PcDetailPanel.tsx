@@ -23,7 +23,12 @@ const InfoRow = ({
   </div>
 );
 
-const PcDetailPanel = () => {
+interface PcDetailPanelProps {
+  pc: any;
+  onClose: () => void;
+}
+
+const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [status, setStatus] = useState("미정");
@@ -93,7 +98,12 @@ const PcDetailPanel = () => {
             </button>
 
             {/* 닫기 */}
-            <button className="btn p-0 border-0 bg-transparent">✕</button>
+            <button
+              className="btn p-0 border-0 bg-transparent"
+              onClick={onClose}
+            >
+              ✕
+            </button>
           </div>
         </div>
 

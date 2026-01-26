@@ -1,17 +1,66 @@
 import { Card, Form } from "react-bootstrap";
 
-const PcList = () => {
+interface PcListProps {
+  onSelectPc: (pc: Pc) => void;
+}
+
+interface Pc {
+  id: number;
+  name: string;
+  os: string;
+  model: string;
+  role: string;
+  company: string;
+}
+
+const dummyPcList: Pc[] = [
+  {
+    id: 1,
+    name: "이유민B",
+    os: "Windows",
+    model: "16ML",
+    role: "어시",
+    company: "코어",
+  },
+  {
+    id: 2,
+    name: "홍길동A",
+    os: "Mac",
+    model: "Macbook Pro",
+    role: "어시",
+    company: "코어",
+  },
+  {
+    id: 3,
+    name: "김철수C",
+    os: "Windows",
+    model: "ThinkPad",
+    role: "정규",
+    company: "코어",
+  },
+];
+
+const PcList = ({ onSelectPc }: PcListProps) => {
   return (
     <>
-      {[1, 2, 3, 4].map((i) => (
-        <Card key={i} className="mb-3">
+      {dummyPcList.map((pc) => (
+        <Card
+          key={pc.id}
+          className="mb-3"
+          style={{ cursor: "pointer" }}
+          onClick={() => onSelectPc(pc)}
+        >
           <Card.Body className="d-flex justify-content-between">
             <div>
-              <div className="fw-bold">이유민B</div>
-              <div className="text-muted">Windows · 16ML · 코어 · 어시</div>
+              <div className="fw-bold">{pc.name}</div>
+              <div className="text-muted">
+                {pc.os} · {pc.model} · {pc.company} · {pc.role}
+              </div>
               <small>요청: 2025-11-20</small>
             </div>
-            <Form.Check />
+
+            {/* 체크박스는 클릭 이벤트 전파 막아주기 */}
+            <Form.Check onClick={(e) => e.stopPropagation()} />
           </Card.Body>
         </Card>
       ))}
