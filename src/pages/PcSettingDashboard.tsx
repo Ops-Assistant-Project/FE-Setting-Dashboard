@@ -7,14 +7,34 @@ import PcList from "../components/PcList";
 import PcDetailPanel from "../components/PcDetailPanel";
 import PcFilterPanel from "../components/PcFilterPanel";
 import BatchPanel from "../components/BatchPanel";
+import { useSettingList } from "../hooks/useSettingList";
 
 const PcSettingDashboard = () => {
+  const { settings, loading } = useSettingList();
+
   const [rightPanel, setRightPanel] = useState<"none" | "detail" | "batch">(
     "none",
   );
   const [selectedSettingId, setSelectedSettingId] = useState<string | null>(
     null,
   );
+
+  const statMap = settings.reduce(
+    (acc, s) => {
+      acc[s.status] = (acc[s.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  const stats = [
+    { title: "출고 전", value: statMap.pending ?? 0 },
+    { title: "출고 완료", value: statMap.shipped ?? 0 },
+    { title: "진행 중", value: statMap.setting ?? 0 },
+    { title: "완료", value: statMap.completed ?? 0 },
+  ];
+
+  if (loading) return null;
 
   /** PC 클릭 → 상세 패널 */
   const handleSelectPc = (settingId: string) => {
@@ -46,7 +66,7 @@ const PcSettingDashboard = () => {
 
           <Row>
             <Col lg={8} xl={9}>
-              <StatCards />
+              <StatCards stats={stats} />
               <PcFilterPanel onOpenBatch={handleOpenBatch} />
               <PcList onSelectPc={handleSelectPc} />
             </Col>
