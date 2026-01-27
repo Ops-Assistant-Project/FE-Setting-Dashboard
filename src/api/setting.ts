@@ -45,6 +45,7 @@ export interface Setting {
   network_type: string;
 
   urgency: boolean; // true = 급건
+  is_manual: boolean; // true = 수동 생성
   onboarding_type: "new" | "switch" | "return" | "replace" | string;
 
   status: "pending" | "progress" | "completed" | string;

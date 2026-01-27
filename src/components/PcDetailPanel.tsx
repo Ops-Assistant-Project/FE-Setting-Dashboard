@@ -118,12 +118,14 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           {/* 오른쪽 아이콘 영역 */}
           <div className="d-flex align-items-center gap-2">
             {/* 삭제 (휴지통) */}
-            <button
-              className="btn p-0 border-0 bg-transparent me-2"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              <img src={BinIcon} alt="삭제" width={16} height={16} />
-            </button>
+            {setting?.is_manual && (
+              <button
+                className="btn p-0 border-0 bg-transparent me-2"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                <img src={BinIcon} alt="삭제" width={16} height={16} />
+              </button>
+            )}
 
             {/* 닫기 */}
             <button
