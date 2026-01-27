@@ -28,10 +28,9 @@ export const networkTypeLabels: Record<string, string> = {
   sec: "분리망",
 };
 
-export const onboardingTypeBadges: Record<string, string> = {
-  pending: "danger",
-  new: "primary",
-  replace: "success",
-  rejoin: "warning",
-  switch: "info",
+export const statusLabels: Record<string, string> = {
+  pending: "출고 전",
+  shipped: "출고 완료",
+  setting: "진행중",
+  completed: "완료",
 };

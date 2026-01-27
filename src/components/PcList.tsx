@@ -1,6 +1,8 @@
-import { Card, Form } from "react-bootstrap";
+import { Card, Form, Badge } from "react-bootstrap";
 import { useSettingList } from "../hooks/useSettingList";
 import { companyLabels } from "../constants/labels";
+import { onboardingTypeLabels, statusLabels } from "../constants/labels";
+import { onboardingTypeBadges, statusBadges } from "../constants/badges";
 
 interface PcListProps {
   onSelectPc: (settingId: string) => void;
@@ -22,6 +24,23 @@ const PcList = ({ onSelectPc }: PcListProps) => {
         >
           <Card.Body className="d-flex justify-content-between align-items-center">
             <div>
+              <Badge
+                bg={onboardingTypeBadges[setting.onboarding_type]}
+                className="mb-1 me-1"
+              >
+                {onboardingTypeLabels[setting.onboarding_type]}
+              </Badge>
+
+              <Badge bg={statusBadges[setting.status]} className="mb-1 me-1">
+                {statusLabels[setting.status]}
+              </Badge>
+
+              {setting?.is_manual && (
+                <Badge bg="dark" className="me-1">
+                  수동
+                </Badge>
+              )}
+
               <div className="fw-bold">{setting.user_name}</div>
 
               <div className="text-muted">

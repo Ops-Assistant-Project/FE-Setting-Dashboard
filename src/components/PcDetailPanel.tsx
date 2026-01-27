@@ -11,8 +11,8 @@ import {
   roleLabels,
   deviceTypeLabels,
   networkTypeLabels,
-  onboardingTypeBadges,
 } from "../constants/labels";
+import { onboardingTypeBadges } from "../constants/badges";
 
 type ChecklistItem = {
   text: string;
