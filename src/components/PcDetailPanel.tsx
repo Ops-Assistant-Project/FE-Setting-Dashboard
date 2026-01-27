@@ -11,6 +11,7 @@ import {
   roleLabels,
   deviceTypeLabels,
   networkTypeLabels,
+  onboardingTypeBadges,
 } from "../constants/labels";
 
 type ChecklistItem = {
@@ -109,7 +110,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
               <option value="swich">전환</option>
             </Form.Select>
           ) : (
-            <Badge bg="danger">
+            <Badge bg={onboardingTypeBadges[setting.onboarding_type]}>
               {onboardingTypeLabels[setting.onboarding_type]}
             </Badge>
           )}

@@ -27,3 +27,11 @@ export const networkTypeLabels: Record<string, string> = {
   team: "인터넷망",
   sec: "분리망",
 };
+
+export const onboardingTypeBadges: Record<string, string> = {
+  pending: "danger",
+  new: "primary",
+  replace: "success",
+  rejoin: "warning",
+  switch: "info",
+};
