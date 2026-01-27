@@ -41,6 +41,12 @@ const PcList = ({ onSelectPc }: PcListProps) => {
                 </Badge>
               )}
 
+              {setting?.urgency && (
+                <Badge bg="danger" className="me-1">
+                  급건
+                </Badge>
+              )}
+
               <div className="fw-bold">{setting.user_name}</div>
 
               <div className="text-muted">
