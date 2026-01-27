@@ -1,5 +1,5 @@
 export const onboardingTypeBadges: Record<string, string> = {
-  pending: "danger",
+  pending: "secondary",
   new: "primary",
   replace: "success",
   rejoin: "warning",
