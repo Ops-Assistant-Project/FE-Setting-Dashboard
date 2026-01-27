@@ -58,8 +58,11 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
             >
               <option value="">전체 유형</option>
-              <option value="laptop">노트북</option>
-              <option value="desktop">데스크탑</option>
+              <option value="pending">미정</option>
+              <option value="new">신규입사</option>
+              <option value="replace">교체</option>
+              <option value="rejoin">복직</option>
+              <option value="switch">전환</option>
             </Form.Select>
           </Col>
 
@@ -71,8 +74,10 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
               }
             >
               <option value="">전체 상태</option>
-              <option value="before">출고 전</option>
-              <option value="done">출고 완료</option>
+              <option value="pending">출고 전</option>
+              <option value="shipped">출고 완료</option>
+              <option value="setting">진행 중</option>
+              <option value="completed">완료</option>
             </Form.Select>
           </Col>
 
@@ -84,7 +89,9 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
               }
             >
               <option value="">전체 회사</option>
-              <option value="toss">Toss</option>
+              <option value="core">코어</option>
+              <option value="bank">뱅크</option>
+              <option value="insu">인슈</option>
             </Form.Select>
           </Col>
 
@@ -96,8 +103,8 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
               }
             >
               <option value="">전체 긴급도</option>
-              <option value="normal">일반</option>
-              <option value="high">긴급</option>
+              <option value="false">일반</option>
+              <option value="true">급건</option>
             </Form.Select>
           </Col>
 
@@ -122,8 +129,8 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
               }
             >
               <option value="">전체 생성 방식</option>
-              <option value="manual">수동</option>
-              <option value="auto">자동</option>
+              <option value="true">수동</option>
+              <option value="false">자동</option>
             </Form.Select>
           </Col>
 
