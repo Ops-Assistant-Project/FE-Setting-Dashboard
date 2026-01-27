@@ -16,3 +16,14 @@ export const roleLabels: Record<string, string> = {
   team: "팀원",
   asst: "어시",
 };
+
+export const deviceTypeLabels: Record<string, string> = {
+  EDP001: "인터넷 PC",
+  EDP002: "업무 PC",
+  EDP003: "VDI",
+};
+
+export const networkTypeLabels: Record<string, string> = {
+  team: "인터넷망",
+  sec: "분리망",
+};

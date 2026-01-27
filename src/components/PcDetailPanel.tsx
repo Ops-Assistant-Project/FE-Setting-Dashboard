@@ -9,6 +9,8 @@ import {
   companyLabels,
   onboardingTypeLabels,
   roleLabels,
+  deviceTypeLabels,
+  networkTypeLabels,
 } from "../constants/labels";
 
 type ChecklistItem = {
@@ -173,7 +175,10 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           </InfoRow>
 
           <InfoRow label="장비 종류">
-            <span>인터넷망 - 인터넷 PC</span>
+            <span>
+              {networkTypeLabels[setting.network_type]} -{" "}
+              {deviceTypeLabels[setting.device_type]}
+            </span>
           </InfoRow>
 
           <InfoRow label="시리얼 넘버">
