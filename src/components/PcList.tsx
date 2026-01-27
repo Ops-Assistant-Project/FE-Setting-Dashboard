@@ -1,21 +1,16 @@
 import { Card, Form } from "react-bootstrap";
 import { useSettingList } from "../hooks/useSettingList";
-import type { Setting } from "../api/setting";
+import { companyLabels } from "../constants/labels";
 
 interface PcListProps {
-  onSelectPc: (setting: Setting) => void;
+  onSelectPc: (settingId: string) => void;
 }
-
-const companyLabels: Record<string, string> = {
-  core: "코어",
-  bank: "뱅크",
-  insu: "인슈",
-};
 
 const PcList = ({ onSelectPc }: PcListProps) => {
   const { settings, loading } = useSettingList();
 
   if (loading) return <div>로딩중...</div>;
+
   return (
     <>
       {settings.map((setting) => (
@@ -23,15 +18,15 @@ const PcList = ({ onSelectPc }: PcListProps) => {
           key={setting.id}
           className="mb-3"
           style={{ cursor: "pointer" }}
-          onClick={() => onSelectPc(setting)}
+          onClick={() => onSelectPc(setting.id)}
         >
-          <Card.Body className="d-flex justify-content-between">
+          <Card.Body className="d-flex justify-content-between align-items-center">
             <div>
               <div className="fw-bold">{setting.user_name}</div>
 
               <div className="text-muted">
                 {setting.os} · {setting.model} ·{" "}
-                {companyLabels[setting.company]} ·{" "}
+                {companyLabels[setting.company] ?? setting.company} ·{" "}
                 {setting.role === "team" ? "팀원" : "어시"}
               </div>
 
@@ -40,7 +35,8 @@ const PcList = ({ onSelectPc }: PcListProps) => {
               </small>
             </div>
 
-            <Form.Check />
+            {/* 일괄 작업용 체크박스 (나중에 상태 관리 붙이면 됨) */}
+            <Form.Check onClick={(e) => e.stopPropagation()} />
           </Card.Body>
         </Card>
       ))}

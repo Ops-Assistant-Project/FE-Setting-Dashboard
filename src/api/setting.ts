@@ -32,6 +32,7 @@ export interface Setting {
 
   user_name: string;
   user_email: string;
+  collaborators: string;
 
   company: string;
   role: string;
@@ -48,16 +49,16 @@ export interface Setting {
 
   status: "pending" | "progress" | "completed" | string;
 
-  memo: string | null;
+  memo: string;
   checklist: [];
 
   quick_actions: QuickAction[];
 
-  assignee_name: string | null;
+  assignee_name: string;
 
   requested_date: string; // ISO
-  due_date: string | null;
-  completed_date: string | null;
+  due_date: string;
+  completed_date: string;
 }
 
 /* ======================
@@ -66,6 +67,10 @@ export interface Setting {
 
 export const fetchSettingList = () => {
   return apiClient.get<Setting[]>("/settings");
+};
+
+export const fetchSettingDetail = (settingId: string) => {
+  return apiClient.get<Setting>(`/settings/${settingId}`);
 };
 
 export const createSetting = (payload: CreateSettingPayload) => {

@@ -4,6 +4,12 @@ import DeletePcSettingModal from "./DeletePcSettingModal";
 import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
+import { useSettingDetail } from "../hooks/useSettingDetail";
+import {
+  companyLabels,
+  onboardingTypeLabels,
+  roleLabels,
+} from "../constants/labels";
 
 type ChecklistItem = {
   text: string;
@@ -24,28 +30,43 @@ const InfoRow = ({
 );
 
 interface PcDetailPanelProps {
-  pc: any;
+  settingId: string;
   onClose: () => void;
 }
 
-const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
-  const [isEditMode, setIsEditMode] = useState(false);
+const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
+  const { setting, loading } = useSettingDetail(settingId);
 
-  const [status, setStatus] = useState("미정");
-  const [company, setCompany] = useState("코어");
-  const [role, setRole] = useState("어시");
-  const [collaborator, setCollaborator] = useState("");
-  const [urgency, setUrgency] = useState("일반");
-  const [manager, setManager] = useState("");
-  const [requestDate, setRequestDate] = useState("2025-11-20");
-  const [dueDate, setDueDate] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isMemoEditMode, setIsMemoEditMode] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [input, setInput] = useState("");
+  const [form, setForm] = useState({
+    urgency: setting?.urgency ? "true" : "false",
+    status: setting?.status,
+    company: setting?.company,
+    role: setting?.role,
+    collaborators: setting?.collaborators,
+    assignee_name: setting?.assignee_name,
+    onboarding_type: setting?.onboarding_type,
+    requested_date: setting?.requested_date,
+    due_date: setting?.due_date,
+    memo: setting?.memo,
+  });
 
-  const [isMemoEditMode, setIsMemoEditMode] = useState(false);
-  const [memo, setMemo] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const addChecklist = () => {
     if (!input.trim()) return;
@@ -65,26 +86,30 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
     setChecklist((prev) => prev.filter((_, i) => i !== index));
   };
 
+  if (loading) return <div>로딩중...</div>;
+  if (!setting) return null;
+
   return (
     <Card className="h-100">
       <Card.Body>
-        {/* ===== 상단 상태 ===== */}
         <div className="d-flex justify-content-between align-items-start mb-3">
           {isEditMode ? (
             <Form.Select
               size="sm"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              value={form.onboarding_type}
+              onChange={handleChange}
               style={{ width: 120 }}
             >
-              <option value="미정">미정</option>
-              <option value="출고 전">출고 전</option>
-              <option value="출고 완료">출고 완료</option>
-              <option value="진행중">진행중</option>
-              <option value="완료">완료</option>
+              <option value="pending">미정</option>
+              <option value="new">신규입사</option>
+              <option value="replace">교채</option>
+              <option value="rejoin">복직</option>
+              <option value="swich">전환</option>
             </Form.Select>
           ) : (
-            <Badge bg="danger">{status}</Badge>
+            <Badge bg="danger">
+              {onboardingTypeLabels[setting.onboarding_type]}
+            </Badge>
           )}
 
           {/* 오른쪽 아이콘 영역 */}
@@ -108,8 +133,8 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
         </div>
 
         {/* ===== 이름 / 이메일 ===== */}
-        <h5 className="fw-bold mb-1">이유민B</h5>
-        <div className="text-muted mb-3">asst2508210@tosspartners.com</div>
+        <h5 className="fw-bold mb-1">{setting.user_name}</h5>
+        <div className="text-muted mb-3">{setting.user_email}</div>
 
         <hr />
 
@@ -140,11 +165,11 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
 
         <div className="mb-3">
           <InfoRow label="OS">
-            <span>Windows</span>
+            <span>{setting.os}</span>
           </InfoRow>
 
           <InfoRow label="장비 모델">
-            <span>16ML</span>
+            <span>{setting.model}</span>
           </InfoRow>
 
           <InfoRow label="장비 종류">
@@ -152,21 +177,22 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
           </InfoRow>
 
           <InfoRow label="시리얼 넘버">
-            <span>11199</span>
+            <span>{setting.serial}</span>
           </InfoRow>
 
           <InfoRow label="계열사">
             {isEditMode ? (
               <Form.Select
                 size="sm"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
+                value={form.company}
+                onChange={handleChange}
               >
-                <option value="코어">코어</option>
-                <option value="플랫폼">플랫폼</option>
+                <option value="core">코어</option>
+                <option value="bank">뱅크</option>
+                <option value="insu">인슈</option>
               </Form.Select>
             ) : (
-              <span>{company}</span>
+              <span>{companyLabels[setting.company]}</span>
             )}
           </InfoRow>
 
@@ -174,14 +200,14 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Select
                 size="sm"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
+                value={form.status}
+                onChange={handleChange}
               >
-                <option value="어시">어시</option>
-                <option value="매니저">매니저</option>
+                <option value="team">팀원</option>
+                <option value="asst">어시</option>
               </Form.Select>
             ) : (
-              <span>{role}</span>
+              <span>{roleLabels[setting.role]}</span>
             )}
           </InfoRow>
 
@@ -189,11 +215,11 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
-                value={collaborator}
-                onChange={(e) => setCollaborator(e.target.value)}
+                value={form.collaborators}
+                onChange={handleChange}
               />
             ) : (
-              <span>{collaborator || "-"}</span>
+              <span>{setting.collaborators || "-"}</span>
             )}
           </InfoRow>
 
@@ -201,14 +227,14 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Select
                 size="sm"
-                value={urgency}
-                onChange={(e) => setUrgency(e.target.value)}
+                value={form.urgency}
+                onChange={handleChange}
               >
-                <option value="일반">일반</option>
-                <option value="급건">급건</option>
+                <option value="false">일반</option>
+                <option value="true">급건</option>
               </Form.Select>
             ) : (
-              <span>{urgency}</span>
+              <span>{form.urgency == "false" ? "일반" : "급건"}</span>
             )}
           </InfoRow>
 
@@ -216,11 +242,11 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
-                value={manager}
-                onChange={(e) => setManager(e.target.value)}
+                value={form.assignee_name}
+                onChange={handleChange}
               />
             ) : (
-              <span>{manager || "-"}</span>
+              <span>{setting.assignee_name || "-"}</span>
             )}
           </InfoRow>
 
@@ -229,11 +255,13 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
               <Form.Control
                 size="sm"
                 type="date"
-                value={requestDate}
-                onChange={(e) => setRequestDate(e.target.value)}
+                value={form.requested_date}
+                onChange={handleChange}
               />
             ) : (
-              <span>{requestDate}</span>
+              <span>
+                {new Date(setting.requested_date).toLocaleDateString("ko-KR")}
+              </span>
             )}
           </InfoRow>
 
@@ -242,11 +270,15 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
               <Form.Control
                 size="sm"
                 type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                value={form.due_date}
+                onChange={handleChange}
               />
             ) : (
-              <span>{dueDate || "-"}</span>
+              <span>
+                {setting.due_date
+                  ? new Date(setting.due_date).toLocaleDateString("ko-KR")
+                  : "-"}
+              </span>
             )}
           </InfoRow>
         </div>
@@ -344,8 +376,8 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
           as="textarea"
           rows={3}
           placeholder="메모를 입력하세요..."
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
+          value={form.memo}
+          onChange={handleChange}
           disabled={!isMemoEditMode}
           className="mb-4"
         />
@@ -355,10 +387,34 @@ const PcDetailPanel = ({ pc, onClose }: PcDetailPanelProps) => {
           <>
             <strong className="d-block mb-2">상태 변경</strong>
             <div className="status-grid">
-              <Button variant="dark">출고 전</Button>
-              <Button variant="outline-success">출고 완료</Button>
-              <Button variant="outline-secondary">진행중</Button>
-              <Button variant="outline-secondary">완료</Button>
+              <Button
+                variant={
+                  setting.status == "pending" ? "dark" : "outline-secondary"
+                }
+              >
+                출고 전
+              </Button>
+              <Button
+                variant={
+                  setting.status == "shipped" ? "dark" : "outline-secondary"
+                }
+              >
+                출고 완료
+              </Button>
+              <Button
+                variant={
+                  setting.status == "setting" ? "dark" : "outline-secondary"
+                }
+              >
+                진행중
+              </Button>
+              <Button
+                variant={
+                  setting.status == "completed" ? "dark" : "outline-secondary"
+                }
+              >
+                완료
+              </Button>
             </div>
           </>
         )}

@@ -12,23 +12,25 @@ const PcSettingDashboard = () => {
   const [rightPanel, setRightPanel] = useState<"none" | "detail" | "batch">(
     "none",
   );
-  const [selectedPc, setSelectedPc] = useState<any | null>(null);
+  const [selectedSettingId, setSelectedSettingId] = useState<string | null>(
+    null,
+  );
 
-  /** 데이터 클릭 → 상세 패널 */
-  const handleSelectPc = (pc: any) => {
-    setSelectedPc(pc);
+  /** PC 클릭 → 상세 패널 */
+  const handleSelectPc = (settingId: string) => {
+    setSelectedSettingId(settingId);
     setRightPanel("detail");
   };
 
   /** 일괄 작업 클릭 */
   const handleOpenBatch = () => {
-    setSelectedPc(null);
+    setSelectedSettingId(null);
     setRightPanel("batch");
   };
 
   /** 패널 닫기 */
   const handleClosePanel = () => {
-    setSelectedPc(null);
+    setSelectedSettingId(null);
     setRightPanel("none");
   };
 
@@ -50,8 +52,11 @@ const PcSettingDashboard = () => {
             </Col>
 
             <Col lg={4} xl={3}>
-              {rightPanel === "detail" && selectedPc && (
-                <PcDetailPanel pc={selectedPc} onClose={handleClosePanel} />
+              {rightPanel === "detail" && selectedSettingId && (
+                <PcDetailPanel
+                  settingId={selectedSettingId}
+                  onClose={handleClosePanel}
+                />
               )}
 
               {rightPanel === "batch" && (
