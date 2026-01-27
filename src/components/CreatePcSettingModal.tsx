@@ -176,6 +176,7 @@ const CreatePcSettingModal = ({ show, onClose }: Props) => {
                 name="collaborators"
                 value={form.collaborators}
                 onChange={handleChange}
+                disabled={form.role === "team"}
                 placeholder="협업 팀원 이름"
               />
             </Col>
