@@ -427,10 +427,9 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
       </Card.Body>
       <DeletePcSettingModal
         show={showDeleteModal}
+        settingId={settingId}
         onClose={() => setShowDeleteModal(false)}
-        onConfirm={() => {
-          // TODO: 실제 삭제 API 호출
-          console.log("세팅 삭제");
+        onDeleted={() => {
           setShowDeleteModal(false);
         }}
       />

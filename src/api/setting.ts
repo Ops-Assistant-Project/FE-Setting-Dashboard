@@ -76,3 +76,7 @@ export const fetchSettingDetail = (settingId: string) => {
 export const createSetting = (payload: CreateSettingPayload) => {
   return apiClient.post<Setting>("/settings", payload);
 };
+
+export const deleteSetting = (settingId: string) => {
+  return apiClient.delete(`/settings/${settingId}`);
+};

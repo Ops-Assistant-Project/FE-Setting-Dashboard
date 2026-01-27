@@ -1,16 +1,26 @@
 import { Modal, Button } from "react-bootstrap";
+import { useDeleteSetting } from "../hooks/useDeleteSetting";
 
 interface DeleteSettingModalProps {
   show: boolean;
+  settingId: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onDeleted: () => void;
 }
 
 const DeleteSettingModal = ({
   show,
+  settingId,
   onClose,
-  onConfirm,
+  onDeleted,
 }: DeleteSettingModalProps) => {
+  const { remove, loading } = useDeleteSetting();
+
+  const handleDelete = async () => {
+    await remove(settingId);
+    onDeleted(); // 리스트 갱신 + 패널 닫기
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
@@ -31,7 +41,7 @@ const DeleteSettingModal = ({
           취소
         </Button>
 
-        <Button variant="danger" onClick={onConfirm}>
+        <Button variant="danger" onClick={handleDelete} disabled={loading}>
           삭제
         </Button>
       </Modal.Footer>
