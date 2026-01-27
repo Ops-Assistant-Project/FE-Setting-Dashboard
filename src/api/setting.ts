@@ -8,6 +8,25 @@ export interface QuickAction {
   error_message: string | null;
 }
 
+export interface CreateSettingPayload {
+  user_name: string;
+  user_email: string;
+  urgency: boolean;
+  company: string;
+  role: string;
+  collaborators?: string;
+  serial?: string;
+  os?: string;
+  model?: string;
+  device_type?: string;
+  network_type?: string;
+  onboarding_type: string;
+  requested_date: string;
+  due_date?: string;
+  status: string;
+  memo?: string | null;
+}
+
 export interface Setting {
   id: string;
 
@@ -41,6 +60,14 @@ export interface Setting {
   completed_date: string | null;
 }
 
+/* ======================
+ * API
+====================== */
+
 export const fetchSettingList = () => {
   return apiClient.get<Setting[]>("/settings");
+};
+
+export const createSetting = (payload: CreateSettingPayload) => {
+  return apiClient.post<Setting>("/settings", payload);
 };

@@ -16,7 +16,6 @@ const PcList = ({ onSelectPc }: PcListProps) => {
   const { settings, loading } = useSettingList();
 
   if (loading) return <div>로딩중...</div>;
-  console.log(settings);
   return (
     <>
       {settings.map((setting) => (
