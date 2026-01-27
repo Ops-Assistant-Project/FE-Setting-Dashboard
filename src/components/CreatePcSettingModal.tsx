@@ -280,7 +280,7 @@ const CreatePcSettingModal = ({ show, onClose }: Props) => {
             </Col>
 
             <Col>
-              <Form.Label>마감일</Form.Label>
+              <Form.Label>마감일 *</Form.Label>
               <Form.Control
                 type="date"
                 name="due_date"
