@@ -13,6 +13,12 @@ import {
   networkTypeLabels,
 } from "../constants/labels";
 import { onboardingTypeBadges } from "../constants/badges";
+import {
+  actionTitleMap,
+  actionDescMap,
+  actionIcons,
+  sortQuickActions,
+} from "../constants/quickActions";
 
 type ChecklistItem = {
   text: string;
@@ -58,6 +64,14 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
     due_date: setting?.due_date,
     memo: setting?.memo,
   });
+
+  if (!setting) return null;
+  const sortedActions = sortQuickActions(
+    setting.quick_actions,
+    setting.onboarding_type,
+    setting.os,
+  );
+  const visibleActions = sortedActions.filter((qa) => qa.status !== "n/a");
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -293,21 +307,44 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
 
         {/* ===== 빠른 작업 ===== */}
         <strong className="d-block mb-2">빠른 작업</strong>
-
-        <Card className="mb-3">
-          <Card.Body className="d-flex align-items-center gap-3">
-            <div>🔐</div>
-            <div className="flex-grow-1">
-              <div className="fw-semibold">Okta Setting 그룹 할당</div>
+        {setting.onboarding_type === "pending" ||
+        visibleActions.length === 0 ? (
+          <Card className="mb-3">
+            <Card.Body className="d-flex justify-content-center align-items-center text-center">
               <div className="text-muted small">
-                비밀번호 초기화 및 Setting 그룹 추가
+                실행 가능한 빠른 작업이 없어요
               </div>
-            </div>
-            <Button variant="outline-secondary" size="sm">
-              실행
-            </Button>
-          </Card.Body>
-        </Card>
+            </Card.Body>
+          </Card>
+        ) : (
+          sortedActions.map((qa) => (
+            <Card key={qa.action} className="mb-3">
+              <Card.Body className="d-flex align-items-center gap-3">
+                <img
+                  src={actionIcons[qa.action]}
+                  alt={qa.action}
+                  width={24}
+                  height={24}
+                />
+
+                <div className="flex-grow-1">
+                  <div className="fw-semibold">{actionTitleMap[qa.action]}</div>
+                  <div className="text-muted small">
+                    {actionDescMap[qa.action]}
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  disabled={qa.status === "done"}
+                >
+                  {qa.status === "done" ? "완료" : "실행"}
+                </Button>
+              </Card.Body>
+            </Card>
+          ))
+        )}
 
         {/* ===== 세팅 체크리스트 ===== */}
         <strong className="d-block mb-2">세팅 체크리스트</strong>

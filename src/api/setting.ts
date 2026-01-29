@@ -2,9 +2,9 @@ import apiClient from "./client";
 
 export interface QuickAction {
   action: string;
-  requested_by: string;
-  requested_at: string; // ISO string
-  status: "done" | "n/a" | "pending" | "failed";
+  requested_by: string | null;
+  requested_at: string | null;
+  status: "n/a" | "pending" | "progress" | "error" | "done";
   error_message: string | null;
 }
 
