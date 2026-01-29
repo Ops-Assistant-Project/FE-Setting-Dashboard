@@ -8,6 +8,7 @@ interface Props {
 }
 
 const CreatePcSettingModal = ({ show, onClose }: Props) => {
+  const today = new Date().toISOString().slice(0, 10);
   const [hasAsset, setHasAsset] = useState(false);
   const { create, loading } = useCreateSetting();
 
@@ -24,7 +25,7 @@ const CreatePcSettingModal = ({ show, onClose }: Props) => {
     device_type: "EDP001",
     network_type: "team",
     onboarding_type: "pending",
-    requested_date: "",
+    requested_date: today,
     due_date: "",
     status: "pending",
     memo: "",
@@ -72,7 +73,7 @@ const CreatePcSettingModal = ({ show, onClose }: Props) => {
       device_type: "EDP001",
       network_type: "team",
       onboarding_type: "pending",
-      requested_date: "",
+      requested_date: today,
       due_date: "",
       status: "pending",
       memo: "",
