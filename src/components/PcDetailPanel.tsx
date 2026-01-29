@@ -5,6 +5,7 @@ import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
 import { useSettingDetail } from "../hooks/useSettingDetail";
+import { useQuickAction } from "../hooks/useQuickAction";
 import {
   companyLabels,
   onboardingTypeLabels,
@@ -45,6 +46,7 @@ interface PcDetailPanelProps {
 
 const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
   const { setting, loading } = useSettingDetail(settingId);
+  const { execute } = useQuickAction();
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [isMemoEditMode, setIsMemoEditMode] = useState(false);
@@ -337,9 +339,15 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                 <Button
                   variant="outline-secondary"
                   size="sm"
-                  disabled={qa.status === "done"}
+                  onClick={() =>
+                    execute({
+                      action: qa.action,
+                      settingIds: [setting.id],
+                      requestedBy: "이유민B",
+                    })
+                  }
                 >
-                  {qa.status === "done" ? "완료" : "실행"}
+                  {qa.status === "done" ? "재실행" : "실행"}
                 </Button>
               </Card.Body>
             </Card>

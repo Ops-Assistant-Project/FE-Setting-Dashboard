@@ -62,6 +62,11 @@ export interface Setting {
   completed_date: string;
 }
 
+export interface QuickActionsPayload {
+  setting_ids: string[];
+  requested_by: string;
+}
+
 /* ======================
  * API
 ====================== */
@@ -80,4 +85,11 @@ export const createSetting = (payload: CreateSettingPayload) => {
 
 export const deleteSetting = (settingId: string) => {
   return apiClient.delete(`/settings/${settingId}`);
+};
+
+export const runQuickAction = (
+  action: string,
+  payload: QuickActionsPayload,
+) => {
+  return apiClient.patch(`/settings/action/${action}`, payload);
 };
