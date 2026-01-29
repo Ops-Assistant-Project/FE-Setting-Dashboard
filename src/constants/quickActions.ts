@@ -4,6 +4,7 @@ import sendBlueIcon from "../assets/icons/send-blue.png";
 import sendRainbowIcon from "../assets/icons/send-rainbow.png";
 import settingPurpleIcon from "../assets/icons/setting-purple.png";
 import settingPinkIcon from "../assets/icons/setting-pink.png";
+import type { QuickAction } from "../api/setting";
 
 export const actionTitleMap: Record<string, string> = {
   "okta-setting": "Okta Setting 그룹 할당",
@@ -70,11 +71,6 @@ const quickActionOrder: Record<
     Windows: ["okta-setting", "win-setting", "o365-intune"],
   },
 };
-
-interface QuickAction {
-  action: string;
-  status: string;
-}
 
 export const sortQuickActions = (
   quickActions: QuickAction[],

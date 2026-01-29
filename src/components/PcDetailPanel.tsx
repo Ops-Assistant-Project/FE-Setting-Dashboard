@@ -358,8 +358,10 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                   {(qa.status === "error" || qa.status === "done") && (
                     <div className="text-muted small">
                       최근 실행:{" "}
-                      {new Date(qa.requested_at).toLocaleDateString("ko-KR")} |{" "}
-                      실행자: {qa.requested_by}
+                      {qa.requested_at
+                        ? new Date(qa.requested_at).toLocaleDateString("ko-KR")
+                        : "-"}{" "}
+                      | 실행자: {qa.requested_by}
                     </div>
                   )}
                 </div>
