@@ -39,6 +39,24 @@ const InfoRow = ({
   </div>
 );
 
+const quickActionCardStyle: Record<string, { bg: string }> = {
+  done: {
+    bg: "bg-success-subtle",
+  },
+  error: {
+    bg: "bg-danger-subtle",
+  },
+  pending: {
+    bg: "",
+  },
+  "n/a": {
+    bg: "",
+  },
+  progress: {
+    bg: "",
+  },
+};
+
 interface PcDetailPanelProps {
   settingId: string;
   onClose: () => void;
@@ -320,7 +338,10 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           </Card>
         ) : (
           sortedActions.map((qa) => (
-            <Card key={qa.action} className="mb-3">
+            <Card
+              key={qa.action}
+              className={`mb-3 ${quickActionCardStyle[qa.status]?.bg ?? ""} `}
+            >
               <Card.Body className="d-flex align-items-center gap-3">
                 <img
                   src={actionIcons[qa.action]}
@@ -334,11 +355,25 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                   <div className="text-muted small">
                     {actionDescMap[qa.action]}
                   </div>
+                  {(qa.status === "error" || qa.status === "done") && (
+                    <div className="text-muted small">
+                      최근 실행:{" "}
+                      {new Date(qa.requested_at).toLocaleDateString("ko-KR")} |{" "}
+                      실행자: {qa.requested_by}
+                    </div>
+                  )}
                 </div>
 
                 <Button
-                  variant="outline-secondary"
+                  variant={
+                    qa.status === "done"
+                      ? "outline-success"
+                      : qa.status === "error"
+                        ? "outline-danger"
+                        : "outline-primary"
+                  }
                   size="sm"
+                  disabled={qa.status === "progress"}
                   onClick={() =>
                     execute({
                       action: qa.action,
@@ -347,7 +382,11 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                     })
                   }
                 >
-                  {qa.status === "done" ? "재실행" : "실행"}
+                  {qa.status === "pending"
+                    ? "실행"
+                    : qa.status === "progress"
+                      ? "실행중"
+                      : "재실행"}
                 </Button>
               </Card.Body>
             </Card>
