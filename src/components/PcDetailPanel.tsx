@@ -105,7 +105,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             >
               <option value="pending">미정</option>
               <option value="new">신규입사</option>
-              <option value="replace">교채</option>
+              <option value="replace">교체</option>
               <option value="rejoin">복직</option>
               <option value="swich">전환</option>
             </Form.Select>
