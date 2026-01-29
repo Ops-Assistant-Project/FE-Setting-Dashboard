@@ -67,6 +67,21 @@ export interface QuickActionsPayload {
   requested_by: string;
 }
 
+export interface SettingUpdateItem {
+  id: string;
+  data: {
+    onboarding_type?: "new" | "switch" | "return" | "replace" | string;
+    status?: "pending" | "progress" | "completed" | string;
+    urgency?: boolean;
+    assignee_name?: string;
+    due_date?: string;
+  };
+}
+
+export interface BulkSettingUpdatePayload {
+  updates: SettingUpdateItem[];
+}
+
 /* ======================
  * API
 ====================== */
@@ -85,6 +100,10 @@ export const createSetting = (payload: CreateSettingPayload) => {
 
 export const deleteSetting = (settingId: string) => {
   return apiClient.delete(`/settings/${settingId}`);
+};
+
+export const bulkUpdateSetting = (payload: BulkSettingUpdatePayload) => {
+  return apiClient.patch(`/settings/`, payload);
 };
 
 export const runQuickAction = (

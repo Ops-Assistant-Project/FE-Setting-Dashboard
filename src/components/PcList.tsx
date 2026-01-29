@@ -5,11 +5,19 @@ import { onboardingTypeLabels, statusLabels } from "../constants/labels";
 import { onboardingTypeBadges, statusBadges } from "../constants/badges";
 
 interface PcListProps {
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   onSelectPc: (settingId: string) => void;
 }
 
-const PcList = ({ onSelectPc }: PcListProps) => {
+const PcList = ({ selectedIds, setSelectedIds, onSelectPc }: PcListProps) => {
   const { settings, loading } = useSettingList();
+
+  const toggleCheck = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
+    );
+  };
 
   if (loading) return <div>로딩중...</div>;
 
@@ -60,8 +68,14 @@ const PcList = ({ onSelectPc }: PcListProps) => {
               </small>
             </div>
 
-            {/* 일괄 작업용 체크박스 (나중에 상태 관리 붙이면 됨) */}
-            <Form.Check onClick={(e) => e.stopPropagation()} />
+            <Form.Check
+              checked={selectedIds.includes(setting.id)}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => {
+                e.stopPropagation();
+                toggleCheck(setting.id);
+              }}
+            />
           </Card.Body>
         </Card>
       ))}

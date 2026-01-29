@@ -1,16 +1,66 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
+import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
 
 interface BatchPanelProps {
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  handleClosePanel: () => void;
   onClose: () => void;
 }
 
-const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
-  const [type, setType] = useState("pending");
-  const [status, setStatus] = useState("pending");
-  const [urgency, setUrgency] = useState("true");
-  const [assignee, setAssignee] = useState("");
-  const [dueDate, setDueDate] = useState("");
+const PcDetailPanel = ({
+  selectedIds,
+  setSelectedIds,
+  handleClosePanel,
+  onClose,
+}: BatchPanelProps) => {
+  const { bulkUpdate, loading } = useBulkUpdateSetting();
+  const [form, setForm] = useState({
+    onboarding_type: "",
+    status: "",
+    urgency: "",
+    assignee_name: "",
+    due_date: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const data = Object.entries(form).reduce(
+        (acc, [key, value]) => {
+          if (value !== "") {
+            acc[key] = key === "urgency" ? value === "true" : value;
+          }
+          return acc;
+        },
+        {} as Record<string, boolean | string>,
+      );
+
+      await bulkUpdate({
+        updates: selectedIds.map((id) => ({
+          id,
+          data,
+        })),
+      });
+    } catch (e) {
+      console.error(e);
+      alert("세팅 수정에 실패했어요");
+    }
+  };
+
   return (
     <Card className="h-100">
       <Card.Body>
@@ -54,14 +104,13 @@ const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
           선택 항목의 세팅 유형을 한 번에 변경해요
         </div>
         <Form.Select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          value={form.onboarding_type}
+          name="onboarding_type"
+          onChange={handleChange}
           className="filter-select"
         >
           {/* placeholder 역할 */}
-          <option value="" disabled>
-            유형 선택
-          </option>
+          <option value="">유형 선택</option>
 
           <option value="pending">미정</option>
           <option value="new">신규입사</option>
@@ -75,13 +124,12 @@ const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
           선택 항목의 진행 상태를 한 번에 변경해요
         </div>
         <Form.Select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          value={form.status}
+          name="status"
+          onChange={handleChange}
           className="filter-select"
         >
-          <option value="" disabled>
-            상태 선택
-          </option>
+          <option value="">상태 선택</option>
 
           <option value="pending">출고 전</option>
           <option value="shipped">출고 완료</option>
@@ -94,13 +142,12 @@ const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
           선택 항목의 긴급도를 한 번에 변경해요
         </div>
         <Form.Select
-          value={urgency}
-          onChange={(e) => setUrgency(e.target.value)}
+          value={form.urgency}
+          name="urgency"
+          onChange={handleChange}
           className="filter-select"
         >
-          <option value="" disabled>
-            긴급도 선택
-          </option>
+          <option value="">긴급도 선택</option>
 
           <option value="true">급건</option>
           <option value="false">일반</option>
@@ -111,13 +158,12 @@ const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
           선택 항목의 담당자를 한 번에 변경해요
         </div>
         <Form.Select
-          value={assignee}
-          onChange={(e) => setAssignee(e.target.value)}
+          value={form.assignee_name}
+          name="assignee_name"
+          onChange={handleChange}
           className="filter-select"
         >
-          <option value="" disabled>
-            담당자 선택
-          </option>
+          <option value="">담당자 선택</option>
 
           <option value="김토스A">김토스A</option>
           <option value="이토스B">이토스B</option>
@@ -130,14 +176,25 @@ const PcDetailPanel = ({ onClose }: BatchPanelProps) => {
         </div>
         <Form.Control
           type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          name="due_date"
+          value={form.due_date}
+          onChange={handleChange}
           className="filter-select"
         />{" "}
         <hr />
         <div className="status-grid">
-          <Button variant="dark">저장 (N)</Button>
-          <Button variant="outline-secondary">선택 해제</Button>
+          <Button variant="dark" onClick={handleSubmit} disabled={loading}>
+            저장 ({selectedIds.length})
+          </Button>
+          <Button
+            variant="outline-secondary"
+            onClick={() => {
+              setSelectedIds([]);
+              handleClosePanel();
+            }}
+          >
+            선택 해제
+          </Button>
         </div>
       </Card.Body>
     </Card>
