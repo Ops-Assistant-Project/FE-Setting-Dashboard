@@ -22,7 +22,7 @@ const PcList = ({ onSelectPc }: PcListProps) => {
           style={{ cursor: "pointer" }}
           onClick={() => onSelectPc(setting.id)}
         >
-          <Card.Body className="d-flex justify-content-between align-items-center">
+          <Card.Body className="d-flex justify-content-between">
             <div>
               <Badge
                 bg={onboardingTypeBadges[setting.onboarding_type]}
