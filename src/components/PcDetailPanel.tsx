@@ -6,6 +6,7 @@ import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
 import { useSettingDetail } from "../hooks/useSettingDetail";
 import { useQuickAction } from "../hooks/useQuickAction";
+import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
 import {
   companyLabels,
   onboardingTypeLabels,
@@ -64,6 +65,7 @@ interface PcDetailPanelProps {
 
 const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
   const { setting, loading } = useSettingDetail(settingId);
+  const { bulkUpdate } = useBulkUpdateSetting();
   const { execute } = useQuickAction();
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -73,16 +75,16 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [input, setInput] = useState("");
   const [form, setForm] = useState({
-    urgency: setting?.urgency ? "true" : "false",
-    status: setting?.status,
-    company: setting?.company,
-    role: setting?.role,
-    collaborators: setting?.collaborators,
-    assignee_name: setting?.assignee_name,
-    onboarding_type: setting?.onboarding_type,
-    requested_date: setting?.requested_date,
-    due_date: setting?.due_date,
-    memo: setting?.memo,
+    urgency: "false",
+    status: "",
+    company: "",
+    role: "",
+    collaborators: "",
+    assignee_name: "",
+    onboarding_type: "",
+    requested_date: "",
+    due_date: "",
+    memo: "",
   });
 
   if (!setting) return null;
@@ -103,6 +105,32 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const data = Object.entries(form).reduce(
+        (acc, [key, value]) => {
+          if (value !== "") {
+            acc[key] = key === "urgency" ? value === "true" : value;
+          }
+          return acc;
+        },
+        {} as Record<string, boolean | string>,
+      );
+
+      await bulkUpdate({
+        updates: [
+          {
+            id: settingId,
+            data,
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      alert("세팅 수정에 실패했어요");
+    }
   };
 
   const addChecklist = () => {
@@ -133,6 +161,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           {isEditMode ? (
             <Form.Select
               size="sm"
+              name="onboarding_type"
               value={form.onboarding_type}
               onChange={handleChange}
               style={{ width: 120 }}
@@ -187,7 +216,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
               height={16}
               style={{ cursor: "pointer" }}
               onClick={() => {
-                // TODO: 여기서 저장 API 호출
+                handleSubmit();
                 setIsEditMode(false);
               }}
             />
@@ -197,7 +226,21 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
               width={14}
               height={14}
               style={{ cursor: "pointer" }}
-              onClick={() => setIsEditMode(true)}
+              onClick={() => {
+                setForm({
+                  urgency: setting.urgency ? "true" : "false",
+                  status: setting.status ?? "",
+                  company: setting.company ?? "",
+                  role: setting.role ?? "",
+                  collaborators: setting.collaborators ?? "",
+                  assignee_name: setting.assignee_name ?? "",
+                  onboarding_type: setting.onboarding_type ?? "",
+                  requested_date: setting.requested_date?.slice(0, 10) ?? "",
+                  due_date: setting.due_date?.slice(0, 10) ?? "",
+                  memo: setting.memo ?? "",
+                });
+                setIsEditMode(true);
+              }}
             />
           )}
         </div>
@@ -226,6 +269,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Select
                 size="sm"
+                name="company"
                 value={form.company}
                 onChange={handleChange}
               >
@@ -242,7 +286,8 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Select
                 size="sm"
-                value={form.status}
+                name="role"
+                value={form.role}
                 onChange={handleChange}
               >
                 <option value="team">팀원</option>
@@ -257,6 +302,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
+                name="collaborators"
                 value={form.collaborators}
                 onChange={handleChange}
               />
@@ -269,6 +315,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Select
                 size="sm"
+                name="urgency"
                 value={form.urgency}
                 onChange={handleChange}
               >
@@ -284,6 +331,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
+                name="assignee_name"
                 value={form.assignee_name}
                 onChange={handleChange}
               />
@@ -296,6 +344,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
+                name="requested_date"
                 type="date"
                 value={form.requested_date}
                 onChange={handleChange}
@@ -311,6 +360,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             {isEditMode ? (
               <Form.Control
                 size="sm"
+                name="due_date"
                 type="date"
                 value={form.due_date}
                 onChange={handleChange}
