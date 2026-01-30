@@ -129,7 +129,14 @@ const PcDetailPanel = ({
                   onClick={() =>
                     execute({
                       action: qaName,
-                      settingIds: selectedSettings.map((s) => s.id),
+                      settingIds: selectedSettings
+                        .filter((s) =>
+                          s.quick_actions?.find(
+                            (qa) =>
+                              qa.action === qaName && qa.status === "pending",
+                          ),
+                        )
+                        .map((s) => s.id),
                       requestedBy: "이유민B",
                     })
                   }
