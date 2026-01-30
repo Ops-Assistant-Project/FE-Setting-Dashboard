@@ -405,7 +405,15 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                     <div className="text-muted small">
                       최근 실행:{" "}
                       {qa.requested_at
-                        ? new Date(qa.requested_at).toLocaleDateString("ko-KR")
+                        ? new Date(qa.requested_at + "Z").toLocaleTimeString(
+                            "ko-KR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              timeZone: "Asia/Seoul",
+                            },
+                          )
                         : "-"}{" "}
                       | 실행자: {qa.requested_by}
                     </div>
