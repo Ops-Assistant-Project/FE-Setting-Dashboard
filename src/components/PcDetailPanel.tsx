@@ -88,11 +88,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
   });
 
   if (!setting) return null;
-  const sortedActions = sortQuickActions(
-    setting.quick_actions,
-    setting.onboarding_type,
-    setting.os,
-  );
+  const sortedActions = sortQuickActions(setting.quick_actions);
   const visibleActions = sortedActions.filter((qa) => qa.status !== "n/a");
 
   const handleChange = (

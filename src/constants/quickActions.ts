@@ -34,57 +34,26 @@ export const actionIcons: Record<string, string> = {
 };
 
 // 빠른 작업 카드 정렬 관련
-type OnboardingType = "new" | "replace" | "rejoin" | "switch";
-type OS = "Mac" | "Windows";
-
-const quickActionOrder: Record<
-  OnboardingType,
-  Partial<Record<OS, string[]>>
-> = {
-  /** 1. 신규입사 */
-  new: {
-    Mac: ["okta-setting"],
-    Windows: ["okta-setting", "win-setting", "o365-intune"],
-  },
-
-  /** 2. 교체 */
-  replace: {
-    Mac: ["password-notice", "okta-setting", "pickup-notice"],
-    Windows: [
-      "password-notice",
-      "okta-setting",
-      "win-setting",
-      "o365-intune",
-      "pickup-notice",
-    ],
-  },
-
-  /** 3. 복직 */
-  rejoin: {
-    Mac: ["okta-activate"],
-    Windows: ["okta-activate"],
-  },
-
-  /** 4. 전환 */
-  switch: {
-    Mac: ["okta-setting"],
-    Windows: ["okta-setting", "win-setting", "o365-intune"],
-  },
+const QUICK_ACTION_RANK: Record<string, number> = {
+  "okta-activate": 1,
+  "password-notice": 2,
+  "okta-setting": 3,
+  "win-setting": 4,
+  "o365-intune": 5,
+  "pickup-notice": 6,
 };
 
-export const sortQuickActions = (
-  quickActions: QuickAction[],
-  onboardingType: string,
-  os: string,
-) => {
-  const order =
-    quickActionOrder[onboardingType as keyof typeof quickActionOrder]?.[
-      os as "Mac" | "Windows"
-    ];
-
-  if (!order) return quickActions;
-
+export const sortQuickActions = (quickActions: QuickAction[]) => {
   return [...quickActions]
     .filter((qa) => qa.status !== "n/a")
-    .sort((a, b) => order.indexOf(a.action) - order.indexOf(b.action));
+    .sort(
+      (a, b) =>
+        (QUICK_ACTION_RANK[a.action] ?? 999) -
+        (QUICK_ACTION_RANK[b.action] ?? 999),
+    );
 };
+
+export const sortQuickActionNames = (actions: string[]) =>
+  [...actions].sort(
+    (a, b) => (QUICK_ACTION_RANK[a] ?? 999) - (QUICK_ACTION_RANK[b] ?? 999),
+  );

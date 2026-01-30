@@ -1,21 +1,31 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
+import type { Setting } from "../api/setting";
 import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
+import { useQuickAction } from "../hooks/useQuickAction";
+import { getCommonQuickActions } from "../utils/quickActions";
+import {
+  actionIcons,
+  actionDescMap,
+  actionTitleMap,
+  sortQuickActionNames,
+} from "../constants/quickActions";
 
 interface BatchPanelProps {
-  selectedIds: string[];
+  selectedSettings: Setting[];
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   handleClosePanel: () => void;
   onClose: () => void;
 }
 
 const PcDetailPanel = ({
-  selectedIds,
+  selectedSettings,
   setSelectedIds,
   handleClosePanel,
   onClose,
 }: BatchPanelProps) => {
-  const { bulkUpdate, loading } = useBulkUpdateSetting();
+  const { execute, loadingAction } = useQuickAction();
+  const { bulkUpdate } = useBulkUpdateSetting();
   const [form, setForm] = useState({
     onboarding_type: "",
     status: "",
@@ -23,6 +33,20 @@ const PcDetailPanel = ({
     assignee_name: "",
     due_date: "",
   });
+
+  const data = Object.entries(form).reduce(
+    (acc, [key, value]) => {
+      if (value !== "") {
+        acc[key] = key === "urgency" ? value === "true" : value;
+      }
+      return acc;
+    },
+    {} as Record<string, boolean | string>,
+  );
+
+  const commonActions = sortQuickActionNames(
+    getCommonQuickActions(selectedSettings),
+  );
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -39,19 +63,9 @@ const PcDetailPanel = ({
 
   const handleSubmit = async () => {
     try {
-      const data = Object.entries(form).reduce(
-        (acc, [key, value]) => {
-          if (value !== "") {
-            acc[key] = key === "urgency" ? value === "true" : value;
-          }
-          return acc;
-        },
-        {} as Record<string, boolean | string>,
-      );
-
       await bulkUpdate({
-        updates: selectedIds.map((id) => ({
-          id,
+        updates: selectedSettings.map((setting) => ({
+          id: setting.id,
           data,
         })),
       });
@@ -79,25 +93,53 @@ const PcDetailPanel = ({
         {/* ===== 빠른 작업 ===== */}
         <strong className="d-block mb-2">빠른 작업</strong>
         <div className="text-muted mb-3">
-          이미 완료된 항목은 실행되지 않아요 <br></br>
+          이미 완료된 항목은 일괄 실행에서 제외돼요 <br></br>
           재실행이 필요한 경우, 단일 빠른 작업에서 실행해주세요
         </div>
-        <Card className="mb-3">
-          <Card.Body className="d-flex align-items-center gap-3">
-            <div>🔐</div>
-
-            <div className="flex-grow-1">
-              <div className="fw-semibold">Okta Setting 그룹 할당</div>
+        {commonActions.length === 0 ? (
+          <Card className="mb-3">
+            <Card.Body className="d-flex justify-content-center align-items-center text-center">
               <div className="text-muted small">
-                비밀번호 초기화 및 Setting 그룹 추가
+                실행 가능한 빠른 작업이 없어요
               </div>
-            </div>
+            </Card.Body>
+          </Card>
+        ) : (
+          commonActions.map((qaName) => (
+            <Card key={qaName} className="mb-3">
+              <Card.Body className="d-flex align-items-center gap-3">
+                <img
+                  src={actionIcons[qaName]}
+                  alt={qaName}
+                  width={24}
+                  height={24}
+                />
 
-            <Button variant="outline-secondary" size="sm">
-              실행
-            </Button>
-          </Card.Body>
-        </Card>
+                <div className="flex-grow-1">
+                  <div className="fw-semibold">{actionTitleMap[qaName]}</div>
+                  <div className="text-muted small">
+                    {actionDescMap[qaName]}
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  disabled={loadingAction != null}
+                  onClick={() =>
+                    execute({
+                      action: qaName,
+                      settingIds: selectedSettings.map((s) => s.id),
+                      requestedBy: "이유민B",
+                    })
+                  }
+                >
+                  실행
+                </Button>
+              </Card.Body>
+            </Card>
+          ))
+        )}
         <hr />
         <strong className="d-block mb-2">유형 변경</strong>
         <div className="text-muted mb-3">
@@ -183,8 +225,12 @@ const PcDetailPanel = ({
         />{" "}
         <hr />
         <div className="status-grid">
-          <Button variant="dark" onClick={handleSubmit} disabled={loading}>
-            저장 ({selectedIds.length})
+          <Button
+            variant="dark"
+            onClick={handleSubmit}
+            disabled={Object.keys(data).length === 0}
+          >
+            저장 ({selectedSettings.length})
           </Button>
           <Button
             variant="outline-secondary"

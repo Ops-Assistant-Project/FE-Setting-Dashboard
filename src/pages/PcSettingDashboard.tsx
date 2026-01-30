@@ -18,7 +18,10 @@ const PcSettingDashboard = () => {
   const [selectedSettingId, setSelectedSettingId] = useState<string | null>(
     null,
   ); // 개별 선택용
-  const [selectedIds, setSelectedIds] = useState<string[]>([]); // 일괄 선택용
+
+  // 일괄 선택용
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const selectedSettings = settings.filter((s) => selectedIds.includes(s.id));
 
   const statMap = settings.reduce(
     (acc, s) => {
@@ -89,7 +92,7 @@ const PcSettingDashboard = () => {
 
               {rightPanel === "batch" && (
                 <BatchPanel
-                  selectedIds={selectedIds}
+                  selectedSettings={selectedSettings}
                   setSelectedIds={setSelectedIds}
                   handleClosePanel={handleClosePanel}
                   onClose={handleClosePanel}
