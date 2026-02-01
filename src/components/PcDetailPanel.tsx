@@ -504,8 +504,8 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                 height={16}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  // TODO: 여기서 저장 API 호출
-                  setIsEditMode(false);
+                  handleSubmit();
+                  setIsMemoEditMode(false);
                 }}
               />
             </button>
@@ -515,7 +515,21 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
               width={14}
               height={14}
               style={{ cursor: "pointer" }}
-              onClick={() => setIsMemoEditMode(true)}
+              onClick={() => {
+                setForm({
+                  urgency: setting.urgency ? "true" : "false",
+                  status: setting.status ?? "",
+                  company: setting.company ?? "",
+                  role: setting.role ?? "",
+                  collaborators: setting.collaborators ?? "",
+                  assignee_name: setting.assignee_name ?? "",
+                  onboarding_type: setting.onboarding_type ?? "",
+                  requested_date: setting.requested_date?.slice(0, 10) ?? "",
+                  due_date: setting.due_date?.slice(0, 10) ?? "",
+                  memo: setting.memo ?? "",
+                });
+                setIsMemoEditMode(true);
+              }}
             />
           )}
         </div>
@@ -523,8 +537,9 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
         <Form.Control
           as="textarea"
           rows={3}
-          placeholder="메모를 입력하세요..."
-          value={form.memo}
+          placeholder={setting.memo}
+          value={setting.memo}
+          name="memo"
           onChange={handleChange}
           disabled={!isMemoEditMode}
           className="mb-4"
