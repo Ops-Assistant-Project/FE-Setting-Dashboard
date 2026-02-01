@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
 import DeletePcSettingModal from "./DeletePcSettingModal";
 import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
+import type { ChecklistItem } from "../api/setting";
 import { useSettingDetail } from "../hooks/useSettingDetail";
 import { useQuickAction } from "../hooks/useQuickAction";
 import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
@@ -21,11 +22,6 @@ import {
   actionIcons,
   sortQuickActions,
 } from "../constants/quickActions";
-
-type ChecklistItem = {
-  text: string;
-  checked: boolean;
-};
 
 const InfoRow = ({
   label,
@@ -72,7 +68,19 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
   const [isMemoEditMode, setIsMemoEditMode] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
+  const [checklist, setChecklist] = useState<ChecklistItem[]>(
+    setting?.checklist ?? [],
+  );
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (!setting?.checklist) return;
+    if (initializedRef.current) return;
+
+    setChecklist(setting.checklist);
+    initializedRef.current = true;
+  }, [setting?.id]);
+
   const [input, setInput] = useState("");
   const [form, setForm] = useState({
     urgency: "false",
@@ -129,22 +137,59 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
     }
   };
 
-  const addChecklist = () => {
+  const addChecklist = async () => {
     if (!input.trim()) return;
-    setChecklist([...checklist, { text: input, checked: false }]);
+
+    const nextChecklist = [...checklist, { label: input, checked: false }];
+    setChecklist(nextChecklist);
+
+    try {
+      await bulkUpdate({
+        updates: [
+          {
+            id: settingId,
+            data: { checklist: nextChecklist },
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      alert("체크리스트 추가에 실패했어요");
+    }
+
     setInput("");
   };
 
-  const toggleCheck = (index: number) => {
-    setChecklist((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, checked: !item.checked } : item,
-      ),
+  const toggleCheck = async (index: number) => {
+    const next = checklist.map((item, i) =>
+      i === index ? { ...item, checked: !item.checked } : item,
     );
+
+    setChecklist(next);
+
+    await bulkUpdate({
+      updates: [{ id: settingId, data: { checklist: next } }],
+    });
   };
 
-  const removeChecklist = (index: number) => {
-    setChecklist((prev) => prev.filter((_, i) => i !== index));
+  const removeChecklist = async (index: number) => {
+    const nextChecklist = checklist.filter((_, i) => i !== index);
+
+    setChecklist(nextChecklist);
+
+    try {
+      await bulkUpdate({
+        updates: [
+          {
+            id: settingId,
+            data: { checklist: nextChecklist },
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      alert("체크리스트 삭제에 실패했어요");
+    }
   };
 
   if (loading) return <div>로딩중...</div>;
@@ -477,10 +522,13 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
                   onChange={() => toggleCheck(index)}
                 />
                 <span className={item.checked ? "checked" : ""}>
-                  {item.text}
+                  {item.label}
                 </span>
               </label>
-              <button onClick={() => removeChecklist(index)}>
+              <button
+                className="btn p-0 border-0 bg-transparent me-2"
+                onClick={() => removeChecklist(index)}
+              >
                 <img src={BinIcon} alt="삭제" width={15} height={15} />
               </button>
             </li>

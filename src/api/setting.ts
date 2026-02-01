@@ -8,6 +8,11 @@ export interface QuickAction {
   error_message: string | null;
 }
 
+export type ChecklistItem = {
+  label: string;
+  checked: boolean;
+};
+
 export interface CreateSettingPayload {
   user_name: string;
   user_email: string;
@@ -75,6 +80,7 @@ export interface SettingUpdateItem {
     urgency?: boolean;
     assignee_name?: string;
     due_date?: string;
+    checklist?: ChecklistItem[];
   };
 }
 
