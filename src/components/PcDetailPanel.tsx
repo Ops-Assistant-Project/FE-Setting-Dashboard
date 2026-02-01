@@ -137,6 +137,24 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
     }
   };
 
+  const changeStatus = async (nextStatus: string) => {
+    if (setting.status === nextStatus) return;
+
+    try {
+      await bulkUpdate({
+        updates: [
+          {
+            id: settingId,
+            data: { status: nextStatus },
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      alert("상태 변경에 실패했어요");
+    }
+  };
+
   const addChecklist = async () => {
     if (!input.trim()) return;
 
@@ -240,13 +258,10 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             </button>
           </div>
         </div>
-
         {/* ===== 이름 / 이메일 ===== */}
         <h5 className="fw-bold mb-1">{setting.user_name}</h5>
         <div className="text-muted mb-3">{setting.user_email}</div>
-
         <hr />
-
         <div className="d-flex justify-content-between align-items-center mb-2">
           <strong>기본 정보</strong>
 
@@ -285,7 +300,6 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             />
           )}
         </div>
-
         <div className="mb-3">
           <InfoRow label="OS">
             <span>{setting.os}</span>
@@ -415,7 +429,6 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             )}
           </InfoRow>
         </div>
-
         {/* ===== 빠른 작업 ===== */}
         <strong className="d-block mb-2">빠른 작업</strong>
         {setting.onboarding_type === "pending" ||
@@ -493,10 +506,8 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             </Card>
           ))
         )}
-
         {/* ===== 세팅 체크리스트 ===== */}
         <strong className="d-block mb-2">세팅 체크리스트</strong>
-
         <div className="d-flex gap-2 mb-3">
           <Form.Control
             placeholder="새로운 체크리스트 항목 추가..."
@@ -511,7 +522,6 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             추가
           </Button>
         </div>
-
         <ul className="checklist-list">
           {checklist.map((item, index) => (
             <li key={index} className="checklist-item">
@@ -534,9 +544,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             </li>
           ))}
         </ul>
-
         <hr />
-
         {/* ===== 메모 ===== */}
         <div className="d-flex justify-content-between align-items-center mb-2">
           <strong>메모</strong>
@@ -581,7 +589,6 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
             />
           )}
         </div>
-
         <Form.Control
           as="textarea"
           rows={3}
@@ -594,41 +601,35 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
         />
 
         {/* ===== 상태 변경 ===== */}
-        {!isEditMode && (
-          <>
-            <strong className="d-block mb-2">상태 변경</strong>
-            <div className="status-grid">
-              <Button
-                variant={
-                  setting.status == "pending" ? "dark" : "outline-secondary"
-                }
-              >
-                출고 전
-              </Button>
-              <Button
-                variant={
-                  setting.status == "shipped" ? "dark" : "outline-secondary"
-                }
-              >
-                출고 완료
-              </Button>
-              <Button
-                variant={
-                  setting.status == "setting" ? "dark" : "outline-secondary"
-                }
-              >
-                진행중
-              </Button>
-              <Button
-                variant={
-                  setting.status == "completed" ? "dark" : "outline-secondary"
-                }
-              >
-                완료
-              </Button>
-            </div>
-          </>
-        )}
+        <strong className="d-block mb-2">상태 변경</strong>
+        <div className="status-grid">
+          <Button
+            onClick={() => changeStatus("pending")}
+            variant={setting.status == "pending" ? "dark" : "outline-secondary"}
+          >
+            출고 전
+          </Button>
+          <Button
+            onClick={() => changeStatus("shipped")}
+            variant={setting.status == "shipped" ? "dark" : "outline-secondary"}
+          >
+            출고 완료
+          </Button>
+          <Button
+            onClick={() => changeStatus("setting")}
+            variant={setting.status == "setting" ? "dark" : "outline-secondary"}
+          >
+            진행중
+          </Button>
+          <Button
+            onClick={() => changeStatus("completed")}
+            variant={
+              setting.status == "completed" ? "dark" : "outline-secondary"
+            }
+          >
+            완료
+          </Button>
+        </div>
       </Card.Body>
       <DeletePcSettingModal
         show={showDeleteModal}
