@@ -1,25 +1,27 @@
 import { Card, Form, Badge } from "react-bootstrap";
-import { useSettingList } from "../hooks/useSettingList";
 import { companyLabels } from "../constants/labels";
 import { onboardingTypeLabels, statusLabels } from "../constants/labels";
 import { onboardingTypeBadges, statusBadges } from "../constants/badges";
+import type { Setting } from "../api/setting";
 
 interface PcListProps {
+  settings: Setting[];
   selectedIds: string[];
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   onSelectPc: (settingId: string) => void;
 }
 
-const PcList = ({ selectedIds, setSelectedIds, onSelectPc }: PcListProps) => {
-  const { settings, loading } = useSettingList();
-
+const PcList = ({
+  settings,
+  selectedIds,
+  setSelectedIds,
+  onSelectPc,
+}: PcListProps) => {
   const toggleCheck = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
     );
   };
-
-  if (loading) return <div>로딩중...</div>;
 
   return (
     <>

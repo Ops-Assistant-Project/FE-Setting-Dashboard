@@ -10,6 +10,7 @@ import BatchPanel from "../components/BatchPanel";
 import { CommonToast } from "../components/CommonToast";
 import { useSettingList } from "../hooks/useSettingList";
 import { useToast } from "../hooks/useToast";
+import type { Filters } from "../constants/filters";
 
 const PcSettingDashboard = () => {
   const toast = useToast();
@@ -25,6 +26,53 @@ const PcSettingDashboard = () => {
   // 일괄 선택용
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selectedSettings = settings.filter((s) => selectedIds.includes(s.id));
+
+  const [filters, setFilters] = useState<Filters>({
+    onboarding_type: "",
+    status: "",
+    company: "",
+    priority: "",
+    period: "",
+    createdBy: "",
+  });
+  const [keyword, setKeyword] = useState("");
+
+  const filteredSettings = settings.filter((s) => {
+    const keywordMatch =
+      !keyword ||
+      s.user_name?.toLowerCase().includes(keyword.toLowerCase()) ||
+      s.user_email?.toLowerCase().includes(keyword.toLowerCase());
+
+    if (!keywordMatch) return false;
+
+    if (
+      filters.onboarding_type &&
+      s.onboarding_type !== filters.onboarding_type
+    )
+      return false;
+
+    if (filters.status && s.status !== filters.status) return false;
+
+    if (filters.company && s.company !== filters.company) return false;
+
+    if (filters.priority && String(s.urgency) !== filters.priority)
+      return false;
+
+    if (filters.createdBy && String(s.is_manual) !== filters.createdBy)
+      return false;
+
+    // 기간
+    if (filters.period) {
+      const now = Date.now();
+      const days = Number(filters.period);
+      const createdAt = new Date(s.requested_date);
+      const diff = (now - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (diff > days) return false;
+    }
+
+    return true;
+  });
 
   const statMap = settings.reduce(
     (acc, s) => {
@@ -80,13 +128,20 @@ const PcSettingDashboard = () => {
           <Row>
             <Col lg={8} xl={9}>
               <StatCards stats={stats} />
+
               <PcFilterPanel
-                hasSelection={selectedIds.length > 0}
+                hasSelection={selectedSettings.length > 0}
                 onOpenBatch={handleOpenBatch}
                 listRefetch={listRefetch}
                 toast={toast}
+                filters={filters}
+                onChangeFilters={setFilters}
+                keyword={keyword}
+                onChangeKeyword={setKeyword}
               />
+
               <PcList
+                settings={filteredSettings}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
                 onSelectPc={handleSelectPc}

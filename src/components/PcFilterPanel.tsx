@@ -2,12 +2,17 @@ import { Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import CreatePcSettingModal from "./CreatePcSettingModal";
 import type { ToastController } from "../constants/toast";
+import type { Filters } from "../constants/filters";
 
 interface PcFilterPanelProps {
   hasSelection: boolean;
   onOpenBatch: () => void;
   listRefetch: () => Promise<void>;
   toast: ToastController;
+  filters: Filters;
+  onChangeFilters: (filters: Filters) => void;
+  keyword: string;
+  onChangeKeyword: (v: string) => void;
 }
 
 const PcFilterPanel = ({
@@ -15,25 +20,19 @@ const PcFilterPanel = ({
   onOpenBatch,
   listRefetch,
   toast,
+  filters,
+  onChangeFilters,
+  keyword,
+  onChangeKeyword,
 }: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // 필터 상태들
-  const [filters, setFilters] = useState({
-    type: "",
-    status: "",
-    company: "",
-    priority: "",
-    period: "",
-    createdBy: "",
-  });
 
   // 필터가 하나라도 적용됐는지 체크
   const isFiltered = Object.values(filters).some((v) => v !== "");
 
   const resetFilters = () => {
-    setFilters({
-      type: "",
+    onChangeFilters({
+      onboarding_type: "",
       status: "",
       company: "",
       priority: "",
@@ -46,7 +45,12 @@ const PcFilterPanel = ({
     <Card className="mb-4">
       <Card.Body>
         <div className="d-flex align-items-center gap-2 mb-3">
-          <Form.Control placeholder="이름 또는 이메일 검색" />
+          <Form.Control
+            placeholder="이름 또는 이메일 검색"
+            value={keyword}
+            onChange={(e) => onChangeKeyword(e.target.value)}
+          />
+
           <Button
             className="filter-action-btn"
             onClick={() => setShowCreateModal(true)}
@@ -65,8 +69,10 @@ const PcFilterPanel = ({
         <Row className="g-2 align-items-center">
           <Col>
             <Form.Select
-              value={filters.type}
-              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+              value={filters.onboarding_type}
+              onChange={(e) =>
+                onChangeFilters({ ...filters, onboarding_type: e.target.value })
+              }
             >
               <option value="">전체 유형</option>
               <option value="pending">미정</option>
@@ -81,7 +87,7 @@ const PcFilterPanel = ({
             <Form.Select
               value={filters.status}
               onChange={(e) =>
-                setFilters({ ...filters, status: e.target.value })
+                onChangeFilters({ ...filters, status: e.target.value })
               }
             >
               <option value="">전체 상태</option>
@@ -96,7 +102,7 @@ const PcFilterPanel = ({
             <Form.Select
               value={filters.company}
               onChange={(e) =>
-                setFilters({ ...filters, company: e.target.value })
+                onChangeFilters({ ...filters, company: e.target.value })
               }
             >
               <option value="">전체 회사</option>
@@ -110,7 +116,7 @@ const PcFilterPanel = ({
             <Form.Select
               value={filters.priority}
               onChange={(e) =>
-                setFilters({ ...filters, priority: e.target.value })
+                onChangeFilters({ ...filters, priority: e.target.value })
               }
             >
               <option value="">전체 긴급도</option>
@@ -123,7 +129,7 @@ const PcFilterPanel = ({
             <Form.Select
               value={filters.period}
               onChange={(e) =>
-                setFilters({ ...filters, period: e.target.value })
+                onChangeFilters({ ...filters, period: e.target.value })
               }
             >
               <option value="">전체 기간</option>
@@ -136,7 +142,7 @@ const PcFilterPanel = ({
             <Form.Select
               value={filters.createdBy}
               onChange={(e) =>
-                setFilters({ ...filters, createdBy: e.target.value })
+                onChangeFilters({ ...filters, createdBy: e.target.value })
               }
             >
               <option value="">전체 생성 방식</option>
