@@ -6,6 +6,7 @@ interface DeleteSettingModalProps {
   settingId: string;
   onClose: () => void;
   onDeleted: () => void;
+  listRefetch: () => Promise<void>;
 }
 
 const DeleteSettingModal = ({
@@ -13,12 +14,14 @@ const DeleteSettingModal = ({
   settingId,
   onClose,
   onDeleted,
+  listRefetch,
 }: DeleteSettingModalProps) => {
   const { remove, loading } = useDeleteSetting();
 
   const handleDelete = async () => {
     await remove(settingId);
     onDeleted(); // 리스트 갱신 + 패널 닫기
+    await listRefetch();
   };
 
   return (

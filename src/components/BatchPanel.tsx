@@ -17,6 +17,7 @@ interface BatchPanelProps {
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   handleClosePanel: () => void;
   onClose: () => void;
+  listRefetch: () => Promise<void>;
 }
 
 const PcDetailPanel = ({
@@ -24,6 +25,7 @@ const PcDetailPanel = ({
   setSelectedIds,
   handleClosePanel,
   onClose,
+  listRefetch,
 }: BatchPanelProps) => {
   const [showSelectedModal, setShowSelectedModal] = useState(false);
   const { execute, loadingAction } = useQuickAction();
@@ -71,6 +73,7 @@ const PcDetailPanel = ({
           data,
         })),
       });
+      await listRefetch();
     } catch (e) {
       console.error(e);
       alert("세팅 수정에 실패했어요");

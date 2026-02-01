@@ -5,6 +5,7 @@ import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
 import type { ChecklistItem } from "../api/setting";
+import { useSettingList } from "../hooks/useSettingList";
 import { useSettingDetail } from "../hooks/useSettingDetail";
 import { useQuickAction } from "../hooks/useQuickAction";
 import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
@@ -57,10 +58,15 @@ const quickActionCardStyle: Record<string, { bg: string }> = {
 interface PcDetailPanelProps {
   settingId: string;
   onClose: () => void;
+  listRefetch: () => Promise<void>;
 }
 
-const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
-  const { setting, loading } = useSettingDetail(settingId);
+const PcDetailPanel = ({
+  settingId,
+  onClose,
+  listRefetch,
+}: PcDetailPanelProps) => {
+  const { setting, loading, refetch } = useSettingDetail(settingId);
   const { bulkUpdate } = useBulkUpdateSetting();
   const { execute } = useQuickAction();
 
@@ -131,6 +137,8 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           },
         ],
       });
+      await refetch();
+      await listRefetch();
     } catch (e) {
       console.error(e);
       alert("세팅 수정에 실패했어요");
@@ -149,6 +157,8 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           },
         ],
       });
+      await refetch();
+      await listRefetch();
     } catch (e) {
       console.error(e);
       alert("상태 변경에 실패했어요");
@@ -170,6 +180,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           },
         ],
       });
+      await refetch();
     } catch (e) {
       console.error(e);
       alert("체크리스트 추가에 실패했어요");
@@ -188,6 +199,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
     await bulkUpdate({
       updates: [{ id: settingId, data: { checklist: next } }],
     });
+    await refetch();
   };
 
   const removeChecklist = async (index: number) => {
@@ -204,6 +216,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
           },
         ],
       });
+      await refetch();
     } catch (e) {
       console.error(e);
       alert("체크리스트 삭제에 실패했어요");
@@ -634,6 +647,7 @@ const PcDetailPanel = ({ settingId, onClose }: PcDetailPanelProps) => {
       <DeletePcSettingModal
         show={showDeleteModal}
         settingId={settingId}
+        listRefetch={listRefetch}
         onClose={() => setShowDeleteModal(false)}
         onDeleted={() => {
           setShowDeleteModal(false);

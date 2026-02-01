@@ -10,7 +10,7 @@ import BatchPanel from "../components/BatchPanel";
 import { useSettingList } from "../hooks/useSettingList";
 
 const PcSettingDashboard = () => {
-  const { settings, loading } = useSettingList();
+  const { settings, loading, refetch: listRefetch } = useSettingList();
 
   const [rightPanel, setRightPanel] = useState<"none" | "detail" | "batch">(
     "none",
@@ -74,6 +74,7 @@ const PcSettingDashboard = () => {
               <PcFilterPanel
                 hasSelection={selectedIds.length > 0}
                 onOpenBatch={handleOpenBatch}
+                listRefetch={listRefetch}
               />
               <PcList
                 selectedIds={selectedIds}
@@ -87,6 +88,7 @@ const PcSettingDashboard = () => {
                 <PcDetailPanel
                   settingId={selectedSettingId}
                   onClose={handleClosePanel}
+                  listRefetch={listRefetch}
                 />
               )}
 
@@ -96,6 +98,7 @@ const PcSettingDashboard = () => {
                   setSelectedIds={setSelectedIds}
                   handleClosePanel={handleClosePanel}
                   onClose={handleClosePanel}
+                  listRefetch={listRefetch}
                 />
               )}
             </Col>

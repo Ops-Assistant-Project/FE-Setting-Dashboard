@@ -5,9 +5,10 @@ import { useCreateSetting } from "../hooks/useCreateSetting";
 interface Props {
   show: boolean;
   onClose: () => void;
+  listRefetch: () => Promise<void>;
 }
 
-const CreatePcSettingModal = ({ show, onClose }: Props) => {
+const CreatePcSettingModal = ({ show, onClose, listRefetch }: Props) => {
   const today = new Date().toISOString().slice(0, 10);
   const [hasAsset, setHasAsset] = useState(false);
   const { create, loading } = useCreateSetting();
@@ -51,8 +52,8 @@ const CreatePcSettingModal = ({ show, onClose }: Props) => {
           network_type: "",
         }),
       });
-
       onClose();
+      await listRefetch();
     } catch (e) {
       console.error(e);
       alert("세팅 생성에 실패했어요");

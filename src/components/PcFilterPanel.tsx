@@ -5,9 +5,14 @@ import CreatePcSettingModal from "./CreatePcSettingModal";
 interface PcFilterPanelProps {
   hasSelection: boolean;
   onOpenBatch: () => void;
+  listRefetch: () => Promise<void>;
 }
 
-const PcFilterPanel = ({ hasSelection, onOpenBatch }: PcFilterPanelProps) => {
+const PcFilterPanel = ({
+  hasSelection,
+  onOpenBatch,
+  listRefetch,
+}: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   // 필터 상태들
@@ -48,6 +53,7 @@ const PcFilterPanel = ({ hasSelection, onOpenBatch }: PcFilterPanelProps) => {
 
           <CreatePcSettingModal
             show={showCreateModal}
+            listRefetch={listRefetch}
             onClose={() => setShowCreateModal(false)}
           />
         </div>
