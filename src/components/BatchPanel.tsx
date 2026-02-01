@@ -11,6 +11,7 @@ import {
   actionTitleMap,
   sortQuickActionNames,
 } from "../constants/quickActions";
+import { onboardingTypeLabels } from "../constants/labels";
 import type { ToastController } from "../constants/toast";
 
 interface BatchPanelProps {
@@ -54,6 +55,13 @@ const PcDetailPanel = ({
   const commonActions = sortQuickActionNames(
     getCommonQuickActions(selectedSettings),
   );
+
+  const osSet = new Set(selectedSettings.map((s) => s.os));
+  const typeSet = new Set(selectedSettings.map((s) => s.onboarding_type));
+
+  const hasMixedOs = osSet.size > 1;
+  const hasMixedType = typeSet.size > 1;
+  const hasMixedCondition = hasMixedOs || hasMixedType;
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -117,6 +125,44 @@ const PcDetailPanel = ({
           이미 완료된 항목은 일괄 실행에서 제외돼요 <br></br>
           재실행이 필요한 경우, 단일 빠른 작업에서 실행해주세요
         </div>
+        {hasMixedCondition && (
+          <Card
+            className="mb-3"
+            style={{
+              backgroundColor: "#fff5f5",
+              border: "1px solid #f5c2c7",
+            }}
+          >
+            <Card.Body className="small">
+              <div className="fw-semibold mb-1 text-danger">
+                선택된 세팅 조건이 서로 달라요
+              </div>
+
+              <div className="text-muted mb-2">
+                일괄 작업에서는 <b>모든 세팅에 공통으로 가능한 빠른 작업만</b>{" "}
+                표시돼요
+              </div>
+
+              <div className="d-flex flex-column gap-1">
+                {hasMixedOs && (
+                  <div>
+                    <span className="fw-semibold">OS:</span>{" "}
+                    {[...osSet].join(", ")}
+                  </div>
+                )}
+
+                {hasMixedType && (
+                  <div>
+                    <span className="fw-semibold">유형:</span>{" "}
+                    {[...typeSet]
+                      .map((type) => onboardingTypeLabels[type])
+                      .join(", ")}
+                  </div>
+                )}
+              </div>
+            </Card.Body>
+          </Card>
+        )}
         {commonActions.length === 0 ? (
           <Card className="mb-3">
             <Card.Body className="d-flex justify-content-center align-items-center text-center">
