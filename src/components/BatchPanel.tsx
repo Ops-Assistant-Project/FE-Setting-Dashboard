@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, Badge, Button, Form } from "react-bootstrap";
 import type { Setting } from "../api/setting";
+import SelectedSettingsModal from "./SelectedSettingsModal";
 import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
 import { useQuickAction } from "../hooks/useQuickAction";
 import { getCommonQuickActions } from "../utils/quickActions";
@@ -24,6 +25,7 @@ const PcDetailPanel = ({
   handleClosePanel,
   onClose,
 }: BatchPanelProps) => {
+  const [showSelectedModal, setShowSelectedModal] = useState(false);
   const { execute, loadingAction } = useQuickAction();
   const { bulkUpdate } = useBulkUpdateSetting();
   const [form, setForm] = useState({
@@ -79,11 +81,24 @@ const PcDetailPanel = ({
     <Card className="h-100">
       <Card.Body>
         <div className="d-flex justify-content-between align-items-start mb-3">
-          <Badge bg="primary">미정</Badge>
+          <Badge bg="primary">선택 {selectedSettings.length}건</Badge>
 
-          <button className="btn p-0 border-0 bg-transparent" onClick={onClose}>
-            ✕
-          </button>
+          <div className="d-flex align-items-center gap-2">
+            <button
+              className="btn btn-sm"
+              onClick={() => setShowSelectedModal(true)}
+              disabled={selectedSettings.length === 0}
+            >
+              선택 항목 보기
+            </button>
+
+            <button
+              className="btn p-0 border-0 bg-transparent"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+          </div>
         </div>
         <h5 className="fw-bold mb-1">일괄 작업</h5>
         <div className="text-muted mb-3">
@@ -249,6 +264,11 @@ const PcDetailPanel = ({
             선택 해제
           </Button>
         </div>
+        <SelectedSettingsModal
+          show={showSelectedModal}
+          onClose={() => setShowSelectedModal(false)}
+          selectedSettings={selectedSettings}
+        />
       </Card.Body>
     </Card>
   );
