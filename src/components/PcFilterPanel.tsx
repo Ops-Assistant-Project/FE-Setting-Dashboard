@@ -1,17 +1,20 @@
 import { Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import CreatePcSettingModal from "./CreatePcSettingModal";
+import type { ToastController } from "../constants/toast";
 
 interface PcFilterPanelProps {
   hasSelection: boolean;
   onOpenBatch: () => void;
   listRefetch: () => Promise<void>;
+  toast: ToastController;
 }
 
 const PcFilterPanel = ({
   hasSelection,
   onOpenBatch,
   listRefetch,
+  toast,
 }: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -54,6 +57,7 @@ const PcFilterPanel = ({
           <CreatePcSettingModal
             show={showCreateModal}
             listRefetch={listRefetch}
+            toast={toast}
             onClose={() => setShowCreateModal(false)}
           />
         </div>

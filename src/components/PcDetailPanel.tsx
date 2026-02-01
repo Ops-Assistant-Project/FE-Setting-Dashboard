@@ -5,7 +5,6 @@ import PencilIcon from "../assets/icons/pencil.png";
 import BinIcon from "../assets/icons/bin.png";
 import CheckIcon from "../assets/icons/check.png";
 import type { ChecklistItem } from "../api/setting";
-import { useSettingList } from "../hooks/useSettingList";
 import { useSettingDetail } from "../hooks/useSettingDetail";
 import { useQuickAction } from "../hooks/useQuickAction";
 import { useBulkUpdateSetting } from "../hooks/useBulkUpdateSetting";
@@ -23,6 +22,7 @@ import {
   actionIcons,
   sortQuickActions,
 } from "../constants/quickActions";
+import type { ToastController } from "../constants/toast";
 
 const InfoRow = ({
   label,
@@ -57,14 +57,16 @@ const quickActionCardStyle: Record<string, { bg: string }> = {
 
 interface PcDetailPanelProps {
   settingId: string;
-  onClose: () => void;
   listRefetch: () => Promise<void>;
+  toast: ToastController;
+  onClose: () => void;
 }
 
 const PcDetailPanel = ({
   settingId,
-  onClose,
   listRefetch,
+  toast,
+  onClose,
 }: PcDetailPanelProps) => {
   const { setting, loading, refetch } = useSettingDetail(settingId);
   const { bulkUpdate } = useBulkUpdateSetting();
@@ -139,9 +141,9 @@ const PcDetailPanel = ({
       });
       await refetch();
       await listRefetch();
-    } catch (e) {
-      console.error(e);
-      alert("세팅 수정에 실패했어요");
+      toast.openToast("세팅이 수정되었어요", "success");
+    } catch {
+      toast.openToast("세팅 수정에 실패했어요", "error");
     }
   };
 
@@ -159,9 +161,9 @@ const PcDetailPanel = ({
       });
       await refetch();
       await listRefetch();
-    } catch (e) {
-      console.error(e);
-      alert("상태 변경에 실패했어요");
+      toast.openToast("상태가 변경되었어요", "success");
+    } catch {
+      toast.openToast("상태 변경에 실패했어요", "error");
     }
   };
 
@@ -181,9 +183,8 @@ const PcDetailPanel = ({
         ],
       });
       await refetch();
-    } catch (e) {
-      console.error(e);
-      alert("체크리스트 추가에 실패했어요");
+    } catch {
+      toast.openToast("세팅 수정에 실패했어요", "error");
     }
 
     setInput("");
@@ -217,9 +218,8 @@ const PcDetailPanel = ({
         ],
       });
       await refetch();
-    } catch (e) {
-      console.error(e);
-      alert("체크리스트 삭제에 실패했어요");
+    } catch {
+      toast.openToast("세팅 수정에 실패했어요", "error");
     }
   };
 
@@ -648,6 +648,7 @@ const PcDetailPanel = ({
         show={showDeleteModal}
         settingId={settingId}
         listRefetch={listRefetch}
+        toast={toast}
         onClose={() => setShowDeleteModal(false)}
         onDeleted={() => {
           setShowDeleteModal(false);

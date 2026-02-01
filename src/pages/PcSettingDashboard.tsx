@@ -7,9 +7,12 @@ import PcList from "../components/PcList";
 import PcDetailPanel from "../components/PcDetailPanel";
 import PcFilterPanel from "../components/PcFilterPanel";
 import BatchPanel from "../components/BatchPanel";
+import { CommonToast } from "../components/CommonToast";
 import { useSettingList } from "../hooks/useSettingList";
+import { useToast } from "../hooks/useToast";
 
 const PcSettingDashboard = () => {
+  const toast = useToast();
   const { settings, loading, refetch: listRefetch } = useSettingList();
 
   const [rightPanel, setRightPanel] = useState<"none" | "detail" | "batch">(
@@ -67,6 +70,12 @@ const PcSettingDashboard = () => {
 
         <Container fluid className="p-4">
           <h4 className="mb-4">PC 세팅 대시보드</h4>
+          <CommonToast
+            show={toast.toast.show}
+            message={toast.toast.message}
+            status={toast.toast.status}
+            onClose={toast.closeToast}
+          />
 
           <Row>
             <Col lg={8} xl={9}>
@@ -75,6 +84,7 @@ const PcSettingDashboard = () => {
                 hasSelection={selectedIds.length > 0}
                 onOpenBatch={handleOpenBatch}
                 listRefetch={listRefetch}
+                toast={toast}
               />
               <PcList
                 selectedIds={selectedIds}
@@ -87,8 +97,9 @@ const PcSettingDashboard = () => {
               {rightPanel === "detail" && selectedSettingId && (
                 <PcDetailPanel
                   settingId={selectedSettingId}
-                  onClose={handleClosePanel}
                   listRefetch={listRefetch}
+                  toast={toast}
+                  onClose={handleClosePanel}
                 />
               )}
 
@@ -96,9 +107,10 @@ const PcSettingDashboard = () => {
                 <BatchPanel
                   selectedSettings={selectedSettings}
                   setSelectedIds={setSelectedIds}
+                  listRefetch={listRefetch}
+                  toast={toast}
                   handleClosePanel={handleClosePanel}
                   onClose={handleClosePanel}
-                  listRefetch={listRefetch}
                 />
               )}
             </Col>

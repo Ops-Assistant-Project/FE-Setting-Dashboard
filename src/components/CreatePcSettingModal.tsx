@@ -1,14 +1,16 @@
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import { useCreateSetting } from "../hooks/useCreateSetting";
+import type { ToastController } from "../constants/toast";
 
 interface Props {
   show: boolean;
-  onClose: () => void;
   listRefetch: () => Promise<void>;
+  toast: ToastController;
+  onClose: () => void;
 }
 
-const CreatePcSettingModal = ({ show, onClose, listRefetch }: Props) => {
+const CreatePcSettingModal = ({ show, listRefetch, toast, onClose }: Props) => {
   const today = new Date().toISOString().slice(0, 10);
   const [hasAsset, setHasAsset] = useState(false);
   const { create, loading } = useCreateSetting();
@@ -54,9 +56,9 @@ const CreatePcSettingModal = ({ show, onClose, listRefetch }: Props) => {
       });
       onClose();
       await listRefetch();
-    } catch (e) {
-      console.error(e);
-      alert("세팅 생성에 실패했어요");
+      toast.openToast("세팅이 추가되었어요", "success");
+    } catch {
+      toast.openToast("세팅 추가에 실패했어요", "error");
     }
   };
 

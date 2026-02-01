@@ -1,27 +1,31 @@
 import { Modal, Button } from "react-bootstrap";
 import { useDeleteSetting } from "../hooks/useDeleteSetting";
+import type { ToastController } from "../constants/toast";
 
 interface DeleteSettingModalProps {
   show: boolean;
   settingId: string;
+  listRefetch: () => Promise<void>;
+  toast: ToastController;
   onClose: () => void;
   onDeleted: () => void;
-  listRefetch: () => Promise<void>;
 }
 
 const DeleteSettingModal = ({
   show,
   settingId,
+  listRefetch,
+  toast,
   onClose,
   onDeleted,
-  listRefetch,
 }: DeleteSettingModalProps) => {
   const { remove, loading } = useDeleteSetting();
 
   const handleDelete = async () => {
     await remove(settingId);
-    onDeleted(); // 리스트 갱신 + 패널 닫기
+    onDeleted();
     await listRefetch();
+    toast.openToast("세팅이 삭제되었어요", "success");
   };
 
   return (

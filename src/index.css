@@ -121,3 +121,73 @@ body {
   background-color: #f5f6f8;
   cursor: not-allowed;
 }
+
+.common-toast-wrapper {
+  position: fixed;
+  top: 24px; /* y축 위치 유지 */
+  left: 50%; /* 화면 가로 기준 중앙 */
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+.common-toast-wrapper .toast {
+  min-width: 320px;
+}
+
+.common-toast-wrapper .toast-body {
+  text-align: center;
+  font-weight: 500;
+}
+
+.toast-body {
+  position: relative;
+  text-align: center;
+  padding-right: 32px;
+}
+
+.toast-close-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+}
+
+@keyframes toast-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.common-toast {
+  animation: toast-slide-down 0.3s ease-out;
+}
+
+.toast-exit {
+  animation: toast-fade-out 0.2s ease-in;
+}

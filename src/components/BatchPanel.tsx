@@ -11,21 +11,24 @@ import {
   actionTitleMap,
   sortQuickActionNames,
 } from "../constants/quickActions";
+import type { ToastController } from "../constants/toast";
 
 interface BatchPanelProps {
   selectedSettings: Setting[];
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  listRefetch: () => Promise<void>;
+  toast: ToastController;
   handleClosePanel: () => void;
   onClose: () => void;
-  listRefetch: () => Promise<void>;
 }
 
 const PcDetailPanel = ({
   selectedSettings,
   setSelectedIds,
+  listRefetch,
+  toast,
   handleClosePanel,
   onClose,
-  listRefetch,
 }: BatchPanelProps) => {
   const [showSelectedModal, setShowSelectedModal] = useState(false);
   const { execute, loadingAction } = useQuickAction();
@@ -74,9 +77,9 @@ const PcDetailPanel = ({
         })),
       });
       await listRefetch();
-    } catch (e) {
-      console.error(e);
-      alert("세팅 수정에 실패했어요");
+      toast.openToast("일괄 작업이 처리되었어요", "success");
+    } catch {
+      toast.openToast("상태 변경에 실패했어요", "error");
     }
   };
 
