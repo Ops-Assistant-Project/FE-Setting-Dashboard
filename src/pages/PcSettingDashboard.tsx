@@ -148,7 +148,12 @@ const PcSettingDashboard = () => {
               />
             </Col>
 
-            <Col lg={4} xl={3}>
+            <Col
+              lg={4}
+              xl={3}
+              className="align-self-start"
+              style={{ height: "fit-content" }}
+            >
               {rightPanel === "detail" && selectedSettingId && (
                 <PcDetailPanel
                   settingId={selectedSettingId}
