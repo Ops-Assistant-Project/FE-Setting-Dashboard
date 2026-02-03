@@ -266,7 +266,7 @@ const CreatePcSettingModal = ({ show, listRefetch, toast, onClose }: Props) => {
                 <option value="new">신규입사</option>
                 <option value="replace">교체</option>
                 <option value="return">복직</option>
-                <option value="switch">전환자</option>
+                <option value="switch">전환</option>
               </Form.Select>
             </Col>
           </Row>

@@ -232,7 +232,7 @@ const PcDetailPanel = ({
           <option value="new">신규입사</option>
           <option value="replace">교체</option>
           <option value="rejoin">복직</option>
-          <option value="switch">전환자</option>
+          <option value="switch">전환</option>
         </Form.Select>
         <hr />
         <strong className="d-block mb-2">상태 변경</strong>
