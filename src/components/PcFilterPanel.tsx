@@ -13,6 +13,9 @@ interface PcFilterPanelProps {
   onChangeFilters: (filters: Filters) => void;
   keyword: string;
   onChangeKeyword: (v: string) => void;
+  isAllChecked: boolean;
+  isAnyChecked: boolean;
+  onToggleSelectAll: () => void;
 }
 
 const PcFilterPanel = ({
@@ -24,6 +27,9 @@ const PcFilterPanel = ({
   onChangeFilters,
   keyword,
   onChangeKeyword,
+  isAllChecked,
+  isAnyChecked,
+  onToggleSelectAll,
 }: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -45,6 +51,15 @@ const PcFilterPanel = ({
     <Card className="mb-4">
       <Card.Body>
         <div className="d-flex align-items-center gap-2 mb-3">
+          <Form.Check
+            type="checkbox"
+            checked={isAllChecked}
+            ref={(el) => {
+              if (el) el.indeterminate = !isAllChecked && isAnyChecked;
+            }}
+            onChange={onToggleSelectAll}
+          />
+
           <Form.Control
             placeholder="이름 또는 이메일 검색"
             value={keyword}

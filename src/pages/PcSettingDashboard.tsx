@@ -74,6 +74,26 @@ const PcSettingDashboard = () => {
     return true;
   });
 
+  const allFilteredIds = filteredSettings.map((s) => s.id);
+
+  const isAllChecked =
+    allFilteredIds.length > 0 &&
+    allFilteredIds.every((id) => selectedIds.includes(id));
+
+  const isAnyChecked = selectedIds.length > 0;
+
+  const toggleSelectAll = () => {
+    if (isAllChecked) {
+      setSelectedIds((prev) =>
+        prev.filter((id) => !allFilteredIds.includes(id)),
+      );
+    } else {
+      setSelectedIds((prev) =>
+        Array.from(new Set([...prev, ...allFilteredIds])),
+      );
+    }
+  };
+
   const statMap = settings.reduce(
     (acc, s) => {
       acc[s.status] = (acc[s.status] || 0) + 1;
@@ -138,6 +158,9 @@ const PcSettingDashboard = () => {
                 onChangeFilters={setFilters}
                 keyword={keyword}
                 onChangeKeyword={setKeyword}
+                isAllChecked={isAllChecked}
+                isAnyChecked={isAnyChecked}
+                onToggleSelectAll={toggleSelectAll}
               />
 
               <PcList
