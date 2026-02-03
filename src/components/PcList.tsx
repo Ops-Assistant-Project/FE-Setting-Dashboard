@@ -72,7 +72,7 @@ const PcList = ({
                 {setting.due_date && (
                   <span> · 마감: {setting.due_date.split("T")[0]}</span>
                 )}
-                {setting.completed_date && (
+                {setting.status == "completed" && setting.completed_date && (
                   <span className="text-success fw-semibold">
                     {" "}
                     · 완료: {setting.completed_date.split("T")[0]}

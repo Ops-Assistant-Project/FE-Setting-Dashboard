@@ -77,6 +77,14 @@ const PcDetailPanel = ({
   };
 
   const handleSubmit = async () => {
+    const payload: Record<string, any> = {
+      ...form,
+    };
+
+    if (form.status === "completed") {
+      payload.completed_date = new Date().toISOString().split("T")[0];
+    }
+
     try {
       await bulkUpdate({
         updates: selectedSettings.map((setting) => ({

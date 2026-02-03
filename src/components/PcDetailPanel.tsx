@@ -150,12 +150,21 @@ const PcDetailPanel = ({
   const changeStatus = async (nextStatus: string) => {
     if (setting.status === nextStatus) return;
 
+    const data: {
+      status: string;
+      completed_date?: string;
+    } = { status: nextStatus };
+
+    if (nextStatus === "completed") {
+      data.completed_date = new Date().toISOString().split("T")[0];
+    }
+
     try {
       await bulkUpdate({
         updates: [
           {
             id: settingId,
-            data: { status: nextStatus },
+            data,
           },
         ],
       });
