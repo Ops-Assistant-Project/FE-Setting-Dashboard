@@ -57,7 +57,9 @@ const PcList = ({
                 </Badge>
               )}
 
-              <div className="fw-bold">{setting.user_name}</div>
+              <div className="fw-bold">
+                {setting.user_name} · {setting.user_email}
+              </div>
 
               <div className="text-muted">
                 {setting.os} · {setting.model} ·{" "}
@@ -66,7 +68,16 @@ const PcList = ({
               </div>
 
               <small>
-                요청: {new Date(setting.requested_date).toLocaleDateString()}
+                요청: {setting.requested_date.split("T")[0]}
+                {setting.due_date && (
+                  <span> · 마감: {setting.due_date.split("T")[0]}</span>
+                )}
+                {setting.completed_date && (
+                  <span className="text-success fw-semibold">
+                    {" "}
+                    · 완료: {setting.completed_date.split("T")[0]}
+                  </span>
+                )}
               </small>
             </div>
 
