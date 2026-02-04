@@ -1,21 +1,23 @@
 import { Card, Col, Row } from "react-bootstrap";
 
-const stats = [
-  { title: "출고 전", value: 13 },
-  { title: "출고 완료", value: 0 },
-  { title: "진행 중", value: 0 },
-  { title: "완료", value: 0 },
-];
+interface Stat {
+  title: string;
+  value: number;
+}
 
-const StatCards = () => {
+interface StatCardsProps {
+  stats: Stat[];
+}
+
+const StatCards = ({ stats }: StatCardsProps) => {
   return (
     <Row className="mb-4">
       {stats.map((s) => (
         <Col key={s.title}>
           <Card className="text-center">
             <Card.Body>
-              <Card.Title>{s.title}</Card.Title>
-              <h3>{s.value}</h3>
+              <Card.Title className="text-muted">{s.title}</Card.Title>
+              <h3 className="fw-bold">{s.value}</h3>
             </Card.Body>
           </Card>
         </Col>

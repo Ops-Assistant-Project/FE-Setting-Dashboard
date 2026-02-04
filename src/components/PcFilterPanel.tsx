@@ -1,30 +1,44 @@
 import { Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import CreatePcSettingModal from "./CreatePcSettingModal";
+import type { ToastController } from "../constants/toast";
+import type { Filters } from "../constants/filters";
 
 interface PcFilterPanelProps {
+  hasSelection: boolean;
   onOpenBatch: () => void;
+  listRefetch: () => Promise<void>;
+  toast: ToastController;
+  filters: Filters;
+  onChangeFilters: (filters: Filters) => void;
+  keyword: string;
+  onChangeKeyword: (v: string) => void;
+  isAllChecked: boolean;
+  isAnyChecked: boolean;
+  onToggleSelectAll: () => void;
 }
 
-const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
+const PcFilterPanel = ({
+  hasSelection,
+  onOpenBatch,
+  listRefetch,
+  toast,
+  filters,
+  onChangeFilters,
+  keyword,
+  onChangeKeyword,
+  isAllChecked,
+  isAnyChecked,
+  onToggleSelectAll,
+}: PcFilterPanelProps) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // 필터 상태들
-  const [filters, setFilters] = useState({
-    type: "",
-    status: "",
-    company: "",
-    priority: "",
-    period: "",
-    createdBy: "",
-  });
 
   // 필터가 하나라도 적용됐는지 체크
   const isFiltered = Object.values(filters).some((v) => v !== "");
 
   const resetFilters = () => {
-    setFilters({
-      type: "",
+    onChangeFilters({
+      onboarding_type: "",
       status: "",
       company: "",
       priority: "",
@@ -37,7 +51,21 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
     <Card className="mb-4">
       <Card.Body>
         <div className="d-flex align-items-center gap-2 mb-3">
-          <Form.Control placeholder="이름 또는 이메일 검색" />
+          <Form.Check
+            type="checkbox"
+            checked={isAllChecked}
+            ref={(el) => {
+              if (el) el.indeterminate = !isAllChecked && isAnyChecked;
+            }}
+            onChange={onToggleSelectAll}
+          />
+
+          <Form.Control
+            placeholder="이름 또는 이메일 검색"
+            value={keyword}
+            onChange={(e) => onChangeKeyword(e.target.value)}
+          />
+
           <Button
             className="filter-action-btn"
             onClick={() => setShowCreateModal(true)}
@@ -47,6 +75,8 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
 
           <CreatePcSettingModal
             show={showCreateModal}
+            listRefetch={listRefetch}
+            toast={toast}
             onClose={() => setShowCreateModal(false)}
           />
         </div>
@@ -54,12 +84,17 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
         <Row className="g-2 align-items-center">
           <Col>
             <Form.Select
-              value={filters.type}
-              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+              value={filters.onboarding_type}
+              onChange={(e) =>
+                onChangeFilters({ ...filters, onboarding_type: e.target.value })
+              }
             >
               <option value="">전체 유형</option>
-              <option value="laptop">노트북</option>
-              <option value="desktop">데스크탑</option>
+              <option value="pending">미정</option>
+              <option value="new">신규입사</option>
+              <option value="replace">교체</option>
+              <option value="rejoin">복직</option>
+              <option value="switch">전환</option>
             </Form.Select>
           </Col>
 
@@ -67,12 +102,14 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Form.Select
               value={filters.status}
               onChange={(e) =>
-                setFilters({ ...filters, status: e.target.value })
+                onChangeFilters({ ...filters, status: e.target.value })
               }
             >
               <option value="">전체 상태</option>
-              <option value="before">출고 전</option>
-              <option value="done">출고 완료</option>
+              <option value="pending">출고 전</option>
+              <option value="shipped">출고 완료</option>
+              <option value="setting">진행 중</option>
+              <option value="completed">완료</option>
             </Form.Select>
           </Col>
 
@@ -80,11 +117,13 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Form.Select
               value={filters.company}
               onChange={(e) =>
-                setFilters({ ...filters, company: e.target.value })
+                onChangeFilters({ ...filters, company: e.target.value })
               }
             >
               <option value="">전체 회사</option>
-              <option value="toss">Toss</option>
+              <option value="core">코어</option>
+              <option value="bank">뱅크</option>
+              <option value="insu">인슈</option>
             </Form.Select>
           </Col>
 
@@ -92,12 +131,12 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Form.Select
               value={filters.priority}
               onChange={(e) =>
-                setFilters({ ...filters, priority: e.target.value })
+                onChangeFilters({ ...filters, priority: e.target.value })
               }
             >
               <option value="">전체 긴급도</option>
-              <option value="normal">일반</option>
-              <option value="high">긴급</option>
+              <option value="false">일반</option>
+              <option value="true">급건</option>
             </Form.Select>
           </Col>
 
@@ -105,7 +144,7 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Form.Select
               value={filters.period}
               onChange={(e) =>
-                setFilters({ ...filters, period: e.target.value })
+                onChangeFilters({ ...filters, period: e.target.value })
               }
             >
               <option value="">전체 기간</option>
@@ -118,12 +157,12 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Form.Select
               value={filters.createdBy}
               onChange={(e) =>
-                setFilters({ ...filters, createdBy: e.target.value })
+                onChangeFilters({ ...filters, createdBy: e.target.value })
               }
             >
               <option value="">전체 생성 방식</option>
-              <option value="manual">수동</option>
-              <option value="auto">자동</option>
+              <option value="true">수동</option>
+              <option value="false">자동</option>
             </Form.Select>
           </Col>
 
@@ -145,6 +184,7 @@ const PcFilterPanel = ({ onOpenBatch }: PcFilterPanelProps) => {
             <Button
               className="filter-action-btn"
               variant="outline-primary"
+              disabled={!hasSelection}
               onClick={onOpenBatch}
             >
               일괄 작업
